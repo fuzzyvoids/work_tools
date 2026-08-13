@@ -1,0 +1,181 @@
+---
+# Genericization variables:
+#   Provide internal DNS domains, service URLs, hostnames, IPs, tokens, and deployment paths through inventory, group_vars, host_vars, Ansible Vault, or --extra-vars before use.
+#   pcoip_server_detection_regex: Regular expression used to detect PCoIP license servers in agent logs.
+# 1) Confirm the agent log exists
+- name: Stat agent log
+  ansible.builtin.stat:
+    path: "{{ pcoip_log_path }}"
+  register: pcoip_log_stat
+
+- name: Skip if agent log missing
+  ansible.builtin.debug:
+    msg: "Missing {{ pcoip_log_path }}; skipping detection."
+  when: not pcoip_log_stat.stat.exists
+
+# 2) Detect most recent target server (FQDN allowed) from agent.log
+- name: Detect target license server from agent.log
+  ansible.builtin.shell: |
+    set -o pipefail
+    tail -n 10000 "{{ pcoip_log_path }}" \
+      | grep -Eo "{{ pcoip_server_detection_regex | default('pcoip-[A-Za-z0-9-]+(\\.[A-Za-z0-9.-]+)?') }}" \
+      | tail -n1 || true
+  args: { executable: /bin/bash }
+  register: pcoip_detect_server_cmd
+  changed_when: false
+  failed_when: false
+  when: pcoip_log_stat.stat.exists
+
+- name: Save detected server (or 'unknown')
+  ansible.builtin.set_fact:
+    pcoip_detected_server: "{{ (pcoip_detect_server_cmd.stdout | trim) if pcoip_log_stat.stat.exists else 'unknown' }}"
+
+# 3) Mark host misconfigured if using the bad server
+- name: Flag misconfiguration
+  ansible.builtin.set_fact:
+    pcoip_misconfigured: "{{ pcoip_detected_server.startswith(pcoip_bad_server) }}"
+
+# 4) Parse last server-auth check from the exact MGMT_ENV line and flag "stale since cutoff"
+- name: Extract last MGMT_ENV line again for timestamp parsing
+  ansible.builtin.shell: |
+    set -o pipefail
+    tail -n 20000 "{{ pcoip_log_path }}" \
+      | grep -E 'MGMT_ENV .*tera_mgmt_env_get_string_value: returning https?://' \
+      | tail -n1 || true
+  args: { executable: /bin/bash }
+  register: pcoip_auth_line
+  changed_when: false
+  failed_when: false
+  when: pcoip_log_stat.stat.exists
+
+- name: Compute last_auth_epoch from ISO-8601 prefix (e.g. 2025-08-18T19:19:50.456z)
+  ansible.builtin.shell: |
+    set -o pipefail
+    line="{{ pcoip_auth_line.stdout }}"
+    # Extract leading ISO8601 with optional millis and Z/z
+    ts=$(echo "$line" | grep -Eo '^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]+)?[Zz]' | head -n1)
+    if [ -z "$ts" ]; then
+      echo ""  # no timestamp found
+      exit 0
+    fi
+    # Normalize: drop fractional seconds; force trailing Z uppercase
+    ts_norm=$(echo "$ts" | sed -E 's/([0-9]{2}:[0-9]{2}:[0-9]{2})\.[0-9]+/\1/; s/z$/Z/')
+    # Convert to epoch (UTC)
+    date -u -d "$ts_norm" +%s || echo ""
+  args:
+    executable: /bin/bash
+  register: pcoip_last_auth_epoch_cmd
+  changed_when: false
+  failed_when: false
+  when: pcoip_log_stat.stat.exists
+
+- name: Save last_auth_epoch (0 if unknown)
+  ansible.builtin.set_fact:
+    pcoip_last_auth_epoch: "{{ (pcoip_last_auth_epoch_cmd.stdout | trim | int(0)) if pcoip_log_stat.stat.exists else 0 }}"
+
+- name: Compute cutoff epoch
+  ansible.builtin.shell: |
+    date -d "{{ pcoip_stale_cutoff_date }} 00:00:00" +%s
+  register: pcoip_cutoff_epoch_cmd
+  changed_when: false
+
+- name: Save cutoff epoch
+  ansible.builtin.set_fact:
+    pcoip_cutoff_epoch: "{{ pcoip_cutoff_epoch_cmd.stdout | trim | int(0) }}"
+
+- name: Flag stale since cutoff
+  ansible.builtin.set_fact:
+    pcoip_stale_since_cutoff: "{{ (pcoip_last_auth_epoch | int) == 0 or (pcoip_last_auth_epoch | int) < (pcoip_cutoff_epoch | int) }}"
+
+# 5) Report per-host status
+- name: Report status
+  ansible.builtin.debug:
+    msg: >-
+      detected_server_host={{ pcoip_detected_server | default('unknown') }},
+      misconfigured={{ pcoip_misconfigured }},
+      last_auth_epoch={{ pcoip_last_auth_epoch }},
+      stale_since_{{ pcoip_stale_cutoff_date }}={{ pcoip_stale_since_cutoff }}
+
+# 6) Dynamic group of attention hosts (misconfigured OR stale)
+- name: Add to attention group when misconfigured or stale
+  ansible.builtin.add_host:
+    name: "{{ inventory_hostname }}"
+    groups: "{{ pcoip_attention_group_name }}"
+  when:
+    - pcoip_log_stat.stat.exists
+    - (pcoip_misconfigured | bool) or (pcoip_stale_since_cutoff | bool)
+
+# 7) FIX: If misconfigured, clear ONLY files inside licensing/5 (keep dirs)
+- name: Find files to delete inside {{ pcoip_lic_cache_dir }}
+  ansible.builtin.find:
+    paths: "{{ pcoip_lic_cache_dir }}"
+    file_type: file
+    hidden: true
+    recurse: true
+  register: pcoip_lic_files
+  when:
+    - pcoip_misconfigured | bool
+
+- name: Delete files in {{ pcoip_lic_cache_dir }} (keep directories)
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: absent
+  loop: "{{ pcoip_lic_files.files | default([]) }}"
+  when:
+    - pcoip_misconfigured | bool
+
+- name: Force Sync license with server
+  ansible.builtin.command:
+    cmd: pcoip-list-licenses
+  register: pcoip_sync_result
+  changed_when: true
+  when: pcoip_misconfigured | bool
+
+- name: Show Sync Output
+  ansible.builtin.debug:
+    var: pcoip_sync_result.stdout
+  when: pcoip_misconfigured | bool
+
+# 8) Controller-side: write YAML inventory with attention hosts
+- name: Collect attention hosts
+  ansible.builtin.set_fact:
+    pcoip_attention_hosts: "{{ groups[pcoip_attention_group_name] | default([]) }}"
+  delegate_to: localhost
+  run_once: true
+
+- name: Ensure output directory exists (controller)
+  ansible.builtin.file:
+    path: "{{ (pcoip_output_inventory_path | dirname) | default('.', true) }}"
+    state: directory
+    mode: '0755'
+  delegate_to: localhost
+  run_once: true
+
+- name: Write YAML inventory (controller)
+  ansible.builtin.copy:
+    dest: "{{ pcoip_output_inventory_path }}"
+    mode: '0644'
+    content: |
+      {{ pcoip_attention_group_name }}:
+        hosts:
+      {% if pcoip_attention_hosts | length > 0 -%}
+      {% for h in pcoip_attention_hosts -%}
+          {{ h }}:
+            misconfigured: "{{ (hostvars[h].pcoip_misconfigured | default(false)) | bool }}"
+            stale_since_cutoff: "{{ (hostvars[h].pcoip_stale_since_cutoff | default(false)) | bool }}"
+            detected_server: "{{ hostvars[h].pcoip_detected_server | default('unknown') }}"
+            last_auth_epoch: "{{ hostvars[h].pcoip_last_auth_epoch | default(0) }}"
+      {% endfor -%}
+      {%- else -%}
+          # (none)
+      {%- endif %}
+  delegate_to: localhost
+  run_once: true
+
+- name: Summary
+  ansible.builtin.debug:
+    msg: >-
+      Attention hosts: "{{ pcoip_attention_hosts | length }}."
+      Inventory written to {{ pcoip_output_inventory_path }}.
+  delegate_to: localhost
+  run_once: true

@@ -1,0 +1,38 @@
+---
+# Genericization variables:
+#   Provide internal DNS domains, service URLs, hostnames, IPs, tokens, and deployment paths through inventory, group_vars, host_vars, Ansible Vault, or --extra-vars before use.
+- name: Check services to see if elastic-agent.service exists
+  ansible.builtin.service_facts:
+
+- name: Elastic agent deployment
+  block:
+  
+  - name: Create temp directory for Elastic Agent installation
+    ansible.builtin.file:
+      name: "{{ el_tmp_path }}"
+      state: directory
+      mode: 0755
+
+  - name: Download and Unarchive elastic-agent tar from Security Onion
+    ansible.builtin.unarchive:
+      src: http://{{ elastic_stack_host }}:8443/artifacts/beats/elastic-agent/{{ el_agent }}.tar.gz 
+      dest: "{{ el_tmp_path }}"
+      remote_src: true
+
+  - name: Run elastic agent installer when it isn't present
+    ansible.builtin.command:
+      cmd: >-
+        {{ el_tmp_path }}/{{ el_agent }}/elastic-agent 
+        install -f --insecure --url=https://{{ elastic_stack_host }}:8220 
+        --enrollment-token={{ enrollment_token }}
+    register: elastic_install_result
+
+  - name: Cleanup installer
+    ansible.builtin.file:
+      path: "{{ el_tmp_path }}"
+      state: absent
+    when: elastic_install_result.rc == 0
+  when:
+   - ansible_system == 'Linux'
+   - "'elastic-agent.service' not in ansible_facts.services"
+

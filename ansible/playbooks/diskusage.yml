@@ -1,0 +1,15 @@
+---
+- name: Check disk space usage
+  hosts: all
+  strategy: free
+  tasks:
+    - name: disk usage from command module
+      ## Get user disk usage per box
+      # command: du --max-depth=1 /home
+      ## Get partition based disk usage
+      command: df
+      register: space
+
+    - debug:
+        var: space.stdout_lines
+

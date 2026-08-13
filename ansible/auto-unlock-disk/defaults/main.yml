@@ -1,0 +1,15 @@
+---
+
+# Genericization variables:
+#   auto_unlock_disk_default_luks_device: LUKS block device path, for example /dev/sda3.
+#   auto_unlock_disk_default_luks_password: Initial LUKS passphrase. Set from inventory, Ansible Vault, or --extra-vars.
+#   auto_unlock_disk_default_tang_url: Primary Tang server URL.
+#   auto_unlock_disk_failover_tang_url: First failover Tang server URL.
+#   auto_unlock_disk_failover_tang_url1: Second failover Tang server URL.
+
+auto_unlock_disk_default_luks_device: /dev/sda3
+auto_unlock_disk_default_luks_password: CHANGE_ME
+auto_unlock_disk_default_tang_url: http://tang-primary.example.com:7500
+auto_unlock_disk_failover_tang_url: http://tang-failover-1.example.com:7500
+auto_unlock_disk_failover_tang_url1: http://tang-failover-2.example.com:7500
+core_servers: "{{ groups['physical_servers'] + groups['core_virtual_hosts'] + groups['core_services_servers'] }}"

@@ -1,0 +1,379 @@
+---
+# Genericization variables:
+#   Provide internal DNS domains, service URLs, hostnames, IPs, tokens, and deployment paths through inventory, group_vars, host_vars, Ansible Vault, or --extra-vars before use.
+- name: Disable deltarpms in yum
+  blockinfile:
+    marker: "# {mark} ANSIBLE MANAGED BLOCK - Disable deltarpms"
+    block: |
+      deltarpm=0
+    dest: /etc/yum.conf
+    create: yes
+    backup: yes
+
+- name: Install epel
+  yum:
+    name: epel-release
+    state: present
+  tags:
+    - yum
+
+- name: Add Idaho Scientific repository
+  yum_repository:
+    name: org_packages
+    description: Organization Packages
+    baseurl: "{{ internal_mirror_base_url }}/org_packages"
+    gpgcheck: no
+  tags:
+    - repo-files
+
+- name: Add Libre Office 7.3 repository
+  yum_repository:
+    name: libre-office
+    description: Libre Office Still Version Packages
+    baseurl: "{{ internal_mirror_base_url }}/yum/libre-office "
+    gpgcheck: no
+    enabled: no
+  tags:
+    - repo-files
+
+- name: Install packages
+  yum:
+    name: "{{ packages }}"
+    state: present
+    update_cache: yes
+  vars:
+    packages:
+      - "@base"
+      - "@core"
+      - "@desktop-debugging"
+      - "@dial-up"
+      - "@directory-client"
+      - "@fonts"
+      - "@gnome-desktop"
+      - "@guest-agents"
+      - "@guest-desktop-agents"
+      - "@input-methods"
+      - "@internet-browser"
+      - "@java-platform"
+      - "@multimedia"
+      - "@network-file-system-client"
+      - "@networkmanager-submodules"
+      - "@print-client"
+      - "@x11"
+      - "@^gnome-desktop-environment"
+      - "@development"
+      - "@additional-devel"
+      - "@compat-libraries"
+      - "@graphics"
+      - "@office-suite"
+      - "@technical-writing"
+      - kexec-tools
+      - tmux
+      - cmake
+      - python-devel
+      - thunderbird
+      - telnet
+      - tcpdump
+      - tree
+      - wget
+      - brasero
+      - nasm
+      - iasl
+      - libuuid-devel
+      - k3b
+      - texlive*
+      - nc
+      - gnuplot
+      - minicom
+      - redhat-lsb-core
+      - redhat-lsb-core.i686
+      - wireshark-gnome
+      - libselinux-python
+      - dconf
+      - hplip
+      - libpng12
+      - qgit
+      - tkcvs
+      - htop
+      - the_silver_searcher
+      - meld
+      - pv
+      - texmaker
+      - gitflow
+      - pandoc
+      - bash-completion-extras
+      - glib2-devel
+      - latexmk
+      - python2-psutil
+      - python3
+      - vim-X11
+      - neovim
+      - chromium
+      - clamav
+      - clamav-data.noarch
+      - python3-devel
+      - python2-neovim
+      - python36-neovim
+      - ghdl
+      - graphviz
+      - redhat-lsb
+      - openssl
+      - libXScrnSaver
+      - gcc
+      - gcc-c++
+      - kernel-headers
+      - kernel-devel
+      - ansible
+      - xorg-x11-server-Xvfb
+      - git-lfs
+      - tig
+      - gnome-shell-extension-permanent-notifications
+      - gnome-shell-extension-notifications-alert-on-user-menu
+      - gnome-tweak-tool
+      - mattermost-desktop
+      - ack
+      - draw.io
+      - speedcrunch
+      - virt-manager
+      - simple-scan
+  tags:
+    - yum
+
+- name: Remove packages
+  yum:
+    name: "{{ packages }}"
+    state: absent
+  vars:
+    packages:
+      - firstboot
+      - gnome-initial-setup
+  tags:
+    - yum
+
+- name: Make sure /etc/dconf/profile directory exists
+  file:
+    path: /etc/dconf/profile
+    state: directory
+
+
+- name: Create gdm dconf profile
+  copy:
+    src: gdm.profile
+    dest: /etc/dconf/profile/gdm
+  notify: reload dconf
+
+- name: Make sure dconf gdm.d directory exists
+  file:
+    path: /etc/dconf/db/gdm.d
+    state: directory
+
+- name: Remove user list from the login screen
+  copy:
+    src: 01-gdm-disable-user-list
+    dest: /etc/dconf/db/gdm.d/01-gdm-disable-user-list
+    backup: yes
+  notify: reload dconf
+
+- name: Add login screen banner message
+  copy:
+    src: 01-banner-message
+    dest: /etc/dconf/db/gdm.d/01-banner-message
+    backup: yes
+  notify: reload dconf
+
+- name: Add login message of the day
+  copy:
+    src: motd
+    dest: /etc/motd
+
+- name: Make sure /usr/share/org_packages directory exists
+  file:
+    path: /usr/share/org_packages
+    state: directory
+
+- name: Add Idaho Scientific Logo to system
+  copy:
+    src: logo.png
+    dest: /usr/share/org_packages/logo.png
+
+- name: Add Idaho Scientific Logo to Login Screen
+  copy:
+    src: 01-gdm-logo
+    dest: /etc/dconf/db/gdm.d/01-gdm-logo
+  notify: reload dconf
+
+- name: Add license file to environment by default
+  lineinfile:
+    path: /etc/profile.d/licensing.sh
+    line: export LM_LICENSE_FILE="{{ lm_license_file }}@licenseserver"
+    state: present
+    create: yes
+
+- name: Make sure /etc/chromium/policies/managed/ exists
+  file:
+    path: /etc/chromium/policies/managed
+    state: directory
+
+- name: Add chromium kerberos policy
+  copy:
+    src: kerberos.json
+    dest: /etc/chromium/policies/managed/kerberos.json
+
+- name: Kerberos fix to use canonical names by default
+  lineinfile:
+    regexp: '.*dns_canonicalize_hostname.*'
+    path: /etc/krb5.conf
+    state: absent
+  tags:
+    krb5
+
+- name: Set user.max_user_namespaces
+  sysctl:
+    name: user.max_user_namespaces
+    value: "65536"
+    state: present
+
+- name: Add global pip configuration for internal network
+  blockinfile:
+    marker: "# {mark} ANSIBLE MANAGED BLOCK"
+    block: |
+      [global]
+      no-index = True
+      find-links = file:/share/mirrors/other/python/pip
+    dest: /etc/pip.conf
+    create: yes
+    backup: yes
+
+- name: Increase sysctl fs.inotify.max_user_watches for petalinux
+  sysctl:
+    name: fs.inotify.max_user_watches
+    value: "262144"
+    state: present
+
+- name: Give users the ability use virt-manager without sudo if in the libvirt group
+  blockinfile:
+    marker: "// {mark} ANSIBLE MANAGED BLOCK"
+    block: |
+      polkit.addRule(function(action, subject) {
+        if (action.id == "org.libvirt.unix.manage" && subject.local && subject.active && subject.isInGroup("libvirt")) {
+          return polkit.Result.YES;
+        }
+      });
+    dest: /etc/polkit-1/rules.d/80-libvirt.rules
+    create: yes
+    backup: no
+
+- name: Disable NTP
+  systemd:
+    name: ntpd
+    state: stopped
+    enabled: no
+
+- name: Remove default servers
+  lineinfile:
+    path: /etc/chrony.conf
+    regexp: '^server\s+\d\.centos.pool.ntp.org.*'
+    state: absent
+
+- name: Add ipa as time server
+  blockinfile:
+    marker: "# {mark} ANSIBLE MANAGED BLOCK"
+    block: |
+      server ipa.{{ internal_dns_domain }} iburst
+    dest: /etc/chrony.conf
+    backup: no
+  register: add_ipa_time_server
+
+- name: Enable and start chronyd
+  systemd:
+    name: chronyd
+    state: restarted
+    enabled: yes
+  when: add_ipa_time_server.changed
+
+- name: Enable git credentials cache for 10 hrs
+  blockinfile:
+    marker: "# {mark} ANSIBLE MANAGED BLOCK"
+    block: |
+      [credential]
+      	helper = cache --timeout=36000
+    dest: /etc/gitconfig
+    create: yes
+
+- name: Update icon cache for any newly installed applications
+  command: "gtk-update-icon-cache /usr/share/icons/hicolor/"
+  changed_when: false
+
+- name: Configure notifications extensions by default
+  blockinfile:
+    path: /etc/dconf/db/local.d/00-extensions
+    create: yes
+    mode: "0644"
+    block: |
+      [org/gnome/shell]
+      enabled-extensions=[ 'notifications-alert-on-user-menu@hackedbellini.gmail.com', 'permanent-notifications@bonzini.gnu.org' ]
+
+      [org/gnome/shell/extensions/notifications-alert]
+      color='#000000'
+      backgroundcolor='#73a0d1'
+      usebackgroundcolor=true
+    state: present
+  notify: reload dconf
+
+- name: Copy HP-Color-LaserJet-M452dn ppd file
+  copy:
+    src: hp-color_laserjet_m452d-ps.ppd
+    dest: /usr/share/ppd/HP/
+
+- name: Add Printer
+  command: lpadmin -p HP-Color-LaserJet-M452dn -E -v socket://{{ primary_printer_2_ip }} -P /usr/share/ppd/HP/hp-color_laserjet_m452d-ps.ppd
+
+- name: set repo files
+  set_fact:
+    repos:
+      - "/etc/yum.repos.d/CentOS-Base.repo"
+      - "/etc/yum.repos.d/CentOS-CR.repo"
+      - "/etc/yum.repos.d/CentOS-Debuginfo.repo"
+      - "/etc/yum.repos.d/CentOS-fasttrack.repo"
+        #- "/etc/yum.repos.d/CentOS-SCLo-scl.repo"
+        #- "/etc/yum.repos.d/CentOS-SCLo-scl-rh.repo"
+      - "/etc/yum.repos.d/CentOS-Sources.repo"
+      - "/etc/yum.repos.d/CentOS-x86_64-kernel.repo"
+  tags:
+    - repo-files
+
+- name: Fix Centos repo files
+  replace:
+    path: "{{ item }}"
+    regexp: '#?baseurl=http://mirror\.centos\.org/centos/(.*$)'
+    replace: 'baseurl={{ internal_mirror_base_url }}/CentOS/\1'
+  loop: "{{ repos }}"
+  tags:
+    - repo-files
+
+- name: Comment out mirror list
+  replace:
+    path: "{{ item }}"
+    regexp: '#?mirrorlist=(.*)'
+    replace: '#mirrorlist=\1'
+  loop: "{{ repos }}"
+  tags:
+    - repo-files
+
+- name: Set epel baseurl to our url
+  replace:
+    path: /etc/yum.repos.d/epel.repo
+    regexp: '#?baseurl=http://download\.fedoraproject\.org/pub/epel/7/(.*$)'
+    replace: 'baseurl={{ internal_mirror_base_url }}/CentOS/7-epel/\1'
+  tags:
+    - repo-files
+
+- name: epel - Comment out the metalink
+  replace:
+    path: /etc/yum.repos.d/epel.repo
+    regexp: '#?metalink=(.*)'
+    replace: '#metalink=\1'
+  tags:
+    - repo-files
+  
+

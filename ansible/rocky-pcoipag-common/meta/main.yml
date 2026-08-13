@@ -1,0 +1,14 @@
+---
+dependencies:
+  - role: rhel-8-repos
+    vars:
+      repo_teradici_pcoip_agent: yes
+    when: ansible_distribution == 'RedHat' and ansible_distribution_major_version == '8'
+  - role: rocky-8-repos 
+    vars:
+      repo_teradici_pcoip_agent: yes
+    when: ansible_distribution == 'Rocky' and ansible_distribution_major_version == '8'
+  - role: rocky-9-repos 
+    vars:
+      repo_teradici_pcoip_agent: yes
+    when: ansible_distribution == 'Rocky' and ansible_distribution_major_version == '9'

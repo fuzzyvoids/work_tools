@@ -1,0 +1,10 @@
+---
+
+repo_teradici_license_server: no 
+repo_teradici_license_server_state: present
+repo_teradici_license_server_enabled: yes
+
+repo_teradici_pcoip_agent: no
+repo_teradici_pcoip_agent_state: present
+repo_teradici_pcoip_agent_enabled: yes
+

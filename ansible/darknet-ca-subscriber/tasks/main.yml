@@ -1,0 +1,14 @@
+---
+# Genericization variables:
+#   Provide internal DNS domains, service URLs, hostnames, IPs, tokens, and deployment paths through inventory, group_vars, host_vars, Ansible Vault, or --extra-vars before use.
+- name: Grab certificate
+  copy:
+    src: "{{ internal_ipa_hostname }}.crt"
+    dest: /etc/pki/ca-trust/source/anchors/{{ internal_ipa_hostname }}.crt
+    mode: "0644"
+  register: add_ca
+
+# Need to run this immediately when this is used as a dependency
+- name: Extract Root Keys
+  command: /usr/bin/update-ca-trust extract
+  when: add_ca.changed

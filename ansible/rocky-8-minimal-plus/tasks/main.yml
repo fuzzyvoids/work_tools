@@ -1,0 +1,28 @@
+---
+# Genericization variables:
+#   Provide internal DNS domains, service URLs, hostnames, IPs, tokens, and deployment paths through inventory, group_vars, host_vars, Ansible Vault, or --extra-vars before use.
+- name: Basic needs
+  yum:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      - wget
+      - tar
+      - bzip2
+      - gzip
+      - python3
+      - unzip
+      - git
+      - xz
+      - which
+      - xterm
+      - autoconf
+      - dos2unix
+      - screen
+      - tmux
+      - bash-completion*
+      - ncurses-devel
+      - libtool
+      - postfix
+      - vim-enhanced

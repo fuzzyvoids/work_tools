@@ -1,0 +1,16 @@
+# Genericization variables:
+#   Provide internal DNS domains, service URLs, hostnames, IPs, tokens, and deployment paths through inventory, group_vars, host_vars, Ansible Vault, or --extra-vars before use.
+# This value is used to override the `image_copy_tmp_dir` in the
+# containers.conf file. The default /var/tmp is too small on our machines, so
+# this needs to point to a location with lots of space (recommend at least 20GB
+# of available storage).
+pc_container_tmp_path: "/home/tmp"
+
+# These are the standard registry redirects that are required on internal network for
+# basic runner operation. If we host other container registries, the redirects
+# might point to those instead of the default gitlab registry.
+pc_registry_redirects:
+  - registry: docker.io
+    redirect: "{{ internal_gitlab_hostname }}.{{ internal_dns_domain }}:5050/external/docker.io"
+  - registry: registry.gitlab.com
+    redirect: "{{ internal_gitlab_hostname }}.{{ internal_dns_domain }}:5050/external/registry.gitlab.com"

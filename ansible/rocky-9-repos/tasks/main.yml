@@ -1,0 +1,104 @@
+---
+# Genericization variables:
+#   Provide internal DNS domains, service URLs, hostnames, IPs, tokens, and deployment paths through inventory, group_vars, host_vars, Ansible Vault, or --extra-vars before use.
+- name: Include CA certificate
+  include_role:
+    name: darknet-ca-subscriber
+  when: "install_ca | default(False)"
+
+- name: set repo files
+  set_fact:
+    repos:
+      - "/etc/yum.repos.d/rocky.repo"
+      - "/etc/yum.repos.d/rocky-extras.repo"
+      - "/etc/yum.repos.d/rocky-addons.repo"
+      - "/etc/yum.repos.d/rocky-devel.repo"
+      - "/etc/yum.repos.d/org_packages.repo"
+  tags:
+    - repo-files
+
+- name: Check for Organization Repo Specifically
+  stat:
+    path: /etc/yum.repos.d/org_packages.repo
+  register: org_packages_present
+  tags: 
+    - repo-files
+
+- name: Add Organization Repo if it does not exist
+  ansible.builtin.blockinfile:
+    path: /etc/yum.repos.d/org_packages.repo
+    block: | 
+      [org_packages]
+      baseurl = {{ internal_mirror_base_url }}/org_packages
+      gpgcheck=0
+      name = Organization Packages
+    create: true
+  when: not org_packages_present.stat.exists
+  tags:
+    - repo-files
+
+- name: Set baseurl to our url for initial setup
+  replace:
+    path: "{{ item }}"
+    regexp: '#?baseurl=http://dl\.rockylinux\.org/\$contentdir/(.*$)'
+    replace: 'baseurl={{ internal_mirror_base_url }}/rocky/\1'
+  loop: "{{ repos }}"
+
+- name: Comment out mirror list
+  replace:
+    path: "{{ item }}"
+    regexp: '#?mirrorlist=(.*)'
+    replace: '#mirrorlist=\1'
+  loop: "{{ repos }}"
+
+- name: Replace mirror-server with {{ internal_mirror_hostname }} 
+  replace:
+    path: "{{ item }}" 
+    regexp: 'mirror-server'
+    replace: '{{ internal_mirror_hostname }}'
+  loop: "{{ repos }}"
+  tags:
+    - repo-files
+
+- name: check for epel.repo
+  stat:
+    path: /etc/yum.repos.d/epel.repo
+  register: epel_repo
+
+- name: Install epel when epel.repo missing
+  yum:
+    name: epel-release
+    state: present
+  when: not epel_repo.stat.exists
+    
+- name: Set epel baseurl to our url
+  replace:
+    path: /etc/yum.repos.d/epel.repo
+    regexp: '#?baseurl=https://download\.example/pub/(.*$)'
+    replace: 'baseurl={{ internal_mirror_base_url }}/\1'
+
+- name: Fix epel repo pointed to mirror-server
+  replace: 
+    path: /etc/yum.repos.d/epel.repo
+    regexp: 'mirror-server'
+    replace: '{{ internal_mirror_hostname }}'
+  tags:
+    - repo-files
+
+- name: epel - Comment out the metalink
+  replace:
+    path: /etc/yum.repos.d/epel.repo
+    regexp: '#?metalink=(.*)'
+    replace: '#metalink=\1'
+
+- name: check for epel-cisco-openh264 repo
+  stat: 
+    path: /etc/yum.repos.d/epel-cisco-openh264.repo
+  register: cisco_openh264
+
+- name: Disable epel-cisco-openh264
+  replace:
+    path: /etc/yum.repos.d/epel-cisco-openh264.repo
+    regexp: 'enabled=1'
+    replace: 'enabled=0'
+  when: cisco_openh264.stat.exists

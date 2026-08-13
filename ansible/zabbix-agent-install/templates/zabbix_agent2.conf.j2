@@ -1,0 +1,28 @@
+# Genericization variables:
+#   Provide internal DNS domains, service URLs, hostnames, IPs, tokens, and deployment paths through inventory, group_vars, host_vars, Ansible Vault, or --extra-vars before use.
+### Managed by Ansible – DO NOT EDIT
+### Base config for Zabbix Agent 2 (Rocky 9)
+
+### Identity
+# ReplaceMe line; the play will set this to actual host later
+Hostname=ReplaceMeNow
+HostMetadata={{ zbx_metadata }}
+
+### Server endpoints
+Server={{ zbx_server }}
+ServerActive={{ zbx_server }}
+
+### Listen settings
+ListenPort={{ zbx_listen_port }}
+##ListenIP={{ zabbix_agent_listen_ip }}
+
+### Logging
+LogType=file
+LogFile=/var/log/zabbix/zabbix_agent2.log
+LogFileSize=0
+
+### Security
+# TLS not configured here; add in a drop-in if needed.
+
+### Performance / misc
+Include=/etc/zabbix/zabbix_agent2.d/*.conf

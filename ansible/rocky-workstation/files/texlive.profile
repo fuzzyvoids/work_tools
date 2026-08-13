@@ -1,0 +1,26 @@
+# installation for 2023 version in /usr/local/texlive/2023
+selected_scheme scheme-full
+TEXDIR /usr/local/texlive/2023
+TEXMFCONFIG $TEXMFSYSCONFIG
+TEXMFHOME $TEXMFLOCAL
+TEXMFLOCAL /usr/local/texlive/2023/texmf-config
+TEXMFSYSVAR /usr/local/texlive/2023/texmf-var
+TEXMFVAR $TEXMFSYSVAR
+binary_x86_64-linux 1
+instopt_adjustpath 1
+instopt_adjustrepo 0
+instopt_letter 1
+instopt_portable 0
+instopt_write18_restricted 1
+tlpdbopt_autobackup 1
+tlpdbopt_backupdir tlpkg/backups
+tlpdbopt_create_formats 1
+tlpdbopt_desktop_integration 0
+tlpdbopt_file_assocs 0 
+tlpdbopt_install_docfiles 1
+tlpdbopt_install_srcfiles 1
+tlpdbopt_post_code 1
+tlpdbopt_sys_bin /usr/local/bin
+tlpdbopt_sys_info /usr/local/info
+tlpdbopt_sys_man /usr/local/man
+tlpdbopt_w32_multi_user 0

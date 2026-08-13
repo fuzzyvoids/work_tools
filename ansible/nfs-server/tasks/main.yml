@@ -1,0 +1,72 @@
+---
+# Genericization variables:
+#   Provide internal DNS domains, service URLs, hostnames, IPs, tokens, and deployment paths through inventory, group_vars, host_vars, Ansible Vault, or --extra-vars before use.
+# Instructions from: https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/managing_file_systems
+# Section 4.8: "Installing NFS" and 4.8: "Starting the NFS server"
+# Section 5.4 "Configuring an NFSv4-only server"
+# Section 6.2 "NFS security with AUTH_GSS"
+# https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/configuring_and_using_network_file_services/deploying-an-nfs-server_configuring-and-using-network-file-services#configuring-an-nfsv4-only-server_deploying-an-nfs-server
+
+- name: Install nfs
+  yum:
+    name: nfs-utils
+    state: present
+
+- name: Disable NFSv3
+  lineinfile:
+    path: /etc/nfs.conf
+    regexp: '^\s*#?\s*vers3='
+    line: vers3=no
+  notify: reload nfs-server
+
+- name: Mask v3 services
+  systemd_service:
+    name: "{{ item }}"
+    masked: true
+    enabled: false
+    state: stopped
+  loop:
+    - rpc-statd.service
+    - rpcbind.service
+    - rpcbind.socket
+    
+- name: Make directory for nfs-mountd
+  file:
+    path: /etc/systemd/system/nfs-mountd.service.d
+    state: directory
+    mode: "0755"
+
+- name: Do not listen for NFSv3 mount requests
+  blockinfile:
+    path: /etc/systemd/system/nfs-mountd.service.d/v4only.conf
+    block: |
+      [Service]
+      ExecStart=
+      ExecStart=/usr/sbin/rpc.mountd --no-tcp --no-udp
+    create: true
+    mode: "0644"
+  register: mountd_v4only
+
+- name: Reload and restart nfs-mountd
+  systemd_service:
+    name: nfs-mountd
+    state: restarted
+    enabled: true
+    daemon_reload: true
+  when: mountd_v4only.changed
+
+- name: Enable services
+  systemd_service:
+    name: "{{ item }}"
+    state: started
+    enabled: yes
+  loop:
+    - nfs-server.service
+
+- name: Open up firewall
+  firewalld:
+    service: nfs
+    permanent: yes
+    state: enabled
+    immediate: yes
+

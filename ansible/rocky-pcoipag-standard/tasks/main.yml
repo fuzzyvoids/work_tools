@@ -1,0 +1,85 @@
+---
+# Genericization variables:
+#   Provide internal DNS domains, service URLs, hostnames, IPs, tokens, and deployment paths through inventory, group_vars, host_vars, Ansible Vault, or --extra-vars before use.
+- name: Setup PCoIP Agent repository for rocky
+  yum_repository:
+    name: teradici-pcoip-agent
+    description: Teradici PCoIP graphics and standard agents
+    file: teradici-pcoip-agent
+    baseurl: "{{ internal_mirror_base_url }}/yum/teradici/{{ ansible_distribution_major_version }}/teradici-pcoip-agent"
+    gpgcheck: no
+    gpgkey: "{{ internal_mirror_base_url }}/yum/teradici/gpg.4581DD6ACC910D6F.key"
+    enabled: yes
+  tags: 
+    - repo-files
+
+- name: Remove PCoIP Graphics Agent if installed
+  yum:
+    name:
+      - pcoip-agent-graphics
+    state: removed
+
+- name: Install PCoIP Standard Agent RPMs
+  yum:
+    enablerepo: epel
+    name:
+      - xorg-x11-drv-teravfb
+      - pcoip-agent-standard
+    state: present
+
+- name: Set selinux file settings for certificates
+  sefcontext:
+    setype: cert_t
+    target: '/etc/pcoip-agent/ssl-certs(/.*)?'
+    state: present
+
+- name: Make pcoip certs directory
+  file:
+    path: /etc/pcoip-agent/ssl-certs
+    state: directory
+    mode: '0750'
+    owner: pcoip
+    group: pcoip
+
+- name: Restorecon manually
+  command:
+    cmd: restorecon /etc/pcoip-agent/ssl-certs
+  changed_when: false
+
+- name: Request Certificate
+  command:
+    cmd: ipa-getcert request -K pcoip/{{ ansible_fqdn }} --subject-name='CN={{ ansible_fqdn }},O={{ internal_kerberos_realm }}' --keyfile /etc/pcoip-agent/ssl-certs/pcoip-key.pem --certfile /etc/pcoip-agent/ssl-certs/pcoip-cert.pem --key-size=3072 -D {{ ansible_fqdn }} --id=pcoip-cert --renew --key-usage=digitalSignature --key-usage=nonRepudiation --key-usage=keyEncipherment --key-usage=dataEncipherment --key-owner pcoip --key-perms 0400 --cert-owner pcoip --cert-perms 0400
+    creates: /etc/pcoip-agent/ssl-certs/pcoip-key.pem
+
+- name: Copy ca cert to pcoip cert location
+  copy:
+    src: /etc/ipa/ca.crt
+    dest: /etc/pcoip-agent/ssl-certs/pcoip-cacert.pem
+    owner: pcoip
+    group: pcoip
+    mode: '0400'
+    remote_src: yes
+
+# ensure file present in before continue, sometimes ipa-getcert takes a minute before actually creating the certificate data
+- name: Wait for file pcoip-cert.pem
+  wait_for: 
+    path: /etc/pcoip-agent/ssl-certs/pcoip-cert.pem
+
+# For some reason the file permisions are not correct for the copy and ipa-getcert key/cert perms
+- name: Fix pcoip file permissions
+  file:
+    path: '/etc/pcoip-agent/ssl-certs/{{ item }}'
+    owner: pcoip
+    group: pcoip
+    mode: '0400'
+  loop:
+    - pcoip-key.pem
+    - pcoip-cert.pem
+    - pcoip-cacert.pem
+
+# Restarting will kill the session, including all of your open running programs. So, maybe leave this as a manual step for now
+- name: Restart pcoip service
+  systemd:
+    name: pcoip
+    state: restarted
+

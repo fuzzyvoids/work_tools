@@ -1,0 +1,15 @@
+---
+
+- name: start tuned
+  systemd:
+    enabled: yes
+    state: started
+    name: tuned
+
+- name: switch profile
+  shell: tuned-adm profile virtual-host
+
+- name: restart fapolicyd
+  systemd:
+    name: fapolicyd
+    state: restarted

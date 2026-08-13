@@ -1,0 +1,62 @@
+---
+# Genericization variables:
+#   Provide internal DNS domains, service URLs, hostnames, IPs, tokens, and deployment paths through inventory, group_vars, host_vars, Ansible Vault, or --extra-vars before use.
+- name: Check for Xilinx dir
+  stat:
+    path: "{{ xilinx_tools_path }}"
+  register: xil_dir
+
+- name: Determine if {{ shared_tools_path }} is an nfs share
+  set_fact:
+    remote_tools: "{{ ansible_mounts | selectattr('mount', 'equalto', '{{ shared_tools_path }}') | selectattr('fstype', '!=', 'xfs') | length > 0}}"
+
+- name: Patch the Xilinx tools
+  when: xil_dir.stat.exists and not remote_tools
+  block:
+      # These must be shell commnads because our script later on export variabes after the /bin/bash
+    - name: Create the find command
+      set_fact:
+        find_command: 'find {{ xilinx_tools_path }} -maxdepth 4 -regex ".*/\({{ xilinx_fips_versions | join("\|") }}\)/?.*/bin/\(vivado\|vitis\|vitis-run\)"'
+
+    - name: Find Xilinx shell commands like vivado and vitis
+      command: "{{ find_command }}"
+      register: vivado_search_results
+      changed_when: false
+
+    - name: Add fips_override.so.
+      copy:
+        src: fips_override.so
+        dest: "{{ xilinx_tools_path }}/fips_override.so"
+        mode: "0755"
+    
+    - name: Add fips_enabled file.
+      copy:
+        src: fips_enabled
+        dest: "{{ xilinx_tools_path }}/fips_enabled"
+        mode: "0644"
+    
+    # This script assumes that each "patchable" thing is a bash shell script
+    - name: Update Xilinx script to work in FIPS mode.
+      blockinfile:
+        path: "{{ item }}"
+        insertafter: "#!/bin/bash"
+        block: |
+          if [[ "$(cat /proc/sys/crypto/fips_enabled)" == "1" ]];
+          then
+            export LD_PRELOAD={{ xilinx_tools_path }}/fips_override.so
+          fi
+        state: present
+      loop: "{{ vivado_search_results.stdout_lines }}"
+    
+        # Waiting for maintenance window...
+        #    # Remove old files
+        #    - name: Add fips_override.so.
+        #      file:
+        #        path: "{{ xilinx_tools_path }}/Vitis/fips_override.so"
+        #        state: absent
+        #    
+        #    - name: Add fips_enabled file.
+        #      file:
+        #        path: "{{ xilinx_tools_path }}/Vitis/fips_enabled"
+        #        state: absent
+    

@@ -1,0 +1,16 @@
+---
+# Genericization variables:
+#   Provide internal DNS domains, service URLs, hostnames, IPs, tokens, and deployment paths through inventory, group_vars, host_vars, Ansible Vault, or --extra-vars before use.
+# defaults file for rhel9_cui
+fix_repos:
+  - /etc/yum.repos.d/org_packages.repo
+  - /etc/yum.repos.d/libre-office.repo
+my_servers: "{{ groups['physical_servers'] + groups['core_virtual_hosts'] + groups['core_services_servers'] }}"
+engineer_virtual_hosts: "{{ groups['virtual_hosts'] }}"
+my_workstations: "{{ groups['physical_workstations'] + groups['gitlab_runners'] + groups['borg_cube_vms'] + groups['borg_cube_physical'] + groups['lab_workstations'] + groups['vm_workstations'] }}"
+dn_admins:
+  - nicholasemmerling.admin
+  - russellscattone.admin
+  - robfischer.admin
+  - aaronballard.admin
+

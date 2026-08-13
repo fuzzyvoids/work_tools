@@ -1,0 +1,23 @@
+---
+# Genericization variables:
+#   Provide internal DNS domains, service URLs, hostnames, IPs, tokens, and deployment paths through inventory, group_vars, host_vars, Ansible Vault, or --extra-vars before use.
+# This is just a wrapper around the Red Hat system role nbde_client so that it
+# works on Rocky by overriding the "distribution" to RedHat.
+
+- name: Change Rocky to RedHat if needed
+  set_fact:
+    tmp_distribution: "{{ (ansible_facts['distribution'] == 'Rocky') | ternary('RedHat', ansible_facts['distribution']) }}"
+    tmp_distribution_major_version: "{{ ansible_facts['distribution_major_version'] }}"
+    tmp_distribution_version: "{{ ansible_facts['distribution_version'] }}"
+    tmp_os_family: "{{ ansible_facts['os_family'] }}"
+
+- name: Setup network bound disk encryption.
+  include_role:
+    name: redhat.rhel_system_roles.nbde_client
+  vars:
+    ansible_facts:
+      distribution: "{{ tmp_distribution }}"
+      distribution_major_version: "{{ tmp_distribution_major_version }}"
+      distribution_version: "{{ tmp_distribution_version }}"
+      os_family: "{{ tmp_os_family }}"
+

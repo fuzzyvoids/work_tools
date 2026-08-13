@@ -1,0 +1,7 @@
+# Genericization variables:
+#   Provide internal DNS domains, service URLs, hostnames, IPs, tokens, and deployment paths through inventory, group_vars, host_vars, Ansible Vault, or --extra-vars before use.
+allow perm=any all : dir={{ xilinx_tools_path }}/
+allow perm=any all : dir={{ cadence_tools_path }}/
+allow perm=any all : dir={{ siemens_tools_path }}/
+allow perm=any all : dir={{ synopsys_tools_path }}/
+

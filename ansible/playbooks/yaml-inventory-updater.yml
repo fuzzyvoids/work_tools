@@ -1,0 +1,48 @@
+---
+# Genericization variables:
+#   Provide internal DNS domains, service URLs, hostnames, IPs, tokens, and deployment paths through inventory, group_vars, host_vars, Ansible Vault, or --extra-vars before use.
+# A few notes:
+# lineinfile will append every time it is run; it is better to start from scratch each time 
+# or to make sure you remember to edit/clean up afterward
+
+- name: Creating a new inventory file 
+  hosts:
+    - all 
+  tasks:
+  - name: Create and format inventory file
+    lineinfile:
+      path: "/home/robfischer/devel/it/ansible/auto-inventory.yml"
+      mode: "0644"
+      line: |
+        {% filter indent(width=4, first=true) %}
+        "{{ ansible_hostname }}"
+        {% endfilter %}
+      create: true
+      mode: "0664"
+  - name: update inventory file
+    lineinfile:
+      path: "/home/robfischer/devel/it/ansible/auto-inventory.yml"
+# This path needs to be updated to whatever dir your ansible stuff is in locally
+      mode: "0664"
+      insertafter: '{{ ansible_hostname }}'
+# Note that the filter indent width is what "tabs" the output in the file
+# without it, it will be in the leftmost column
+# Depending upon how nested your output should be, you will need to "tweak" that value
+      line: |
+        {% filter indent(width=6, first=true) %}
+        hostname: "{{ ansible_hostname }}"
+        ip_addr: "{{ ansible_default_ipv4['address'] }}"
+        mac_addr: "{{ ansible_default_ipv4['macaddress'] }}"
+        model: "{{ ansible_product_name }}"
+        serial: "{{ ansible_product_serial }}"
+        os: "{{ ansible_distribution }}"
+        osver: "{{ ansible_distribution_version }}"
+        mem_in_mb: "{{ ansible_memtotal_mb }}"
+        cores: "{{ ansible_processor_cores }}"
+        {% endfilter %}
+# firstmatch causes this task to add the lines after the... first match
+# default behavior is to instert after the last match; to do that, comment out the firstmatch line below
+      firstmatch: yes
+    delegate_to: localhost
+    become: no
+

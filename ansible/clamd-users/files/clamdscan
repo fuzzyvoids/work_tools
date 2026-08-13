@@ -1,0 +1,1 @@
+0 1 * * 0 root /usr/bin/clamdscan --fdpass / --log=/var/log/clamav/clamdscan.log --move=/root/quarantine

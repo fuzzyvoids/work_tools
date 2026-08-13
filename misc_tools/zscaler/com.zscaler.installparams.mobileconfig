@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Genericization variables:
+  ZSCALER_CLOUD_NAME: Zscaler cloud name for the target tenant.
+  ZSCALER_DEVICE_TOKEN: Device token from the target Zscaler app configuration.
+  ZSCALER_POLICY_TOKEN: Optional policy token from the target Zscaler app configuration.
+Replace placeholders before deploying this profile.
+-->
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+	<dict>
+		<key>installation-parameters</key>
+		<dict>
+			<key>cloudName</key>
+			<string>${ZSCALER_CLOUD_NAME}</string>
+			<key>deviceToken</key>
+			<string>${ZSCALER_DEVICE_TOKEN}</string>
+			<key>hideAppUIOnLaunch</key>
+			<string>0</string>
+			<key>launchTray</key>
+			<string>1</string>
+			<key>strictEnforcement</key>
+			<string>1</string>
+			<key>enableFips</key>
+			<string>1</string>
+		</dict>
+	</dict>
+</plist>
+
+

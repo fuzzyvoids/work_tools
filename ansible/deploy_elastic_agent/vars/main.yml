@@ -1,0 +1,7 @@
+# Genericization variables:
+#   el_tmp_path: Temporary install path for the Elastic Agent payload.
+#   elastic_agent_enrollment_token: Elastic/Fleet enrollment token. Set from Ansible Vault or --extra-vars.
+#   el_agent: Elastic Agent archive directory or binary name expected by the install tasks.
+el_tmp_path: /usr/local/bin/elastic-agent
+enrollment_token: "{{ elastic_agent_enrollment_token | default('CHANGE_ME') }}"
+el_agent: so-elastic-agent_linux_amd64

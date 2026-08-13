@@ -1,0 +1,34 @@
+---
+
+- name: Basic needs
+  dnf:
+    state: present
+    name: 
+      - wget
+      - tar
+      - bzip2
+      - gzip
+      - python3
+      - unzip
+      - git
+      - xz
+      - which
+      - xterm
+      - autoconf
+      - dos2unix
+      - screen
+      - tmux
+      - bash-completion*
+      - ncurses-devel
+      - libtool
+      - postfix
+      - vim-enhanced
+
+- name: disable automatic updates 
+  systemd:
+    name: dnf-automatic.timer
+    state: stopped
+    masked: yes
+    enabled: false
+  ignore_errors: true
+#had to put that in or else it kills the whole playbook when the timer isnt' set in the first place

@@ -1,0 +1,8 @@
+---
+# Genericization variables:
+#   Provide internal DNS domains, service URLs, hostnames, IPs, tokens, and deployment paths through inventory, group_vars, host_vars, Ansible Vault, or --extra-vars before use.
+zbx_server: "dn-zabbix"
+zbx_metadata: "ISCI"
+zbx_listen_port: 10050
+zbx_hostname: "{{ ansible_hostname }}"
+zbx_conf_path: "/etc/zabbix/zabbix_agent2.conf"

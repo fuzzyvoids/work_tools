@@ -1,0 +1,191 @@
+# Genericization variables:
+#   Provide internal DNS domains, service URLs, hostnames, IPs, tokens, and deployment paths through inventory, group_vars, host_vars, Ansible Vault, or --extra-vars before use.
+## -- Run on DS0101 
+## -- Run with <username>.admin account
+---
+
+- name: create the servers list
+  set_fact:
+    my_servers: "{{ groups['physical_servers'] + groups['virtual_hosts'] + groups['core_services_servers'] }}"
+- name: create the workstations list
+  set_fact:
+    my_workstations: "{{ groups['physical_workstations'] + groups['gitlab_runners'] + groups['borg_cube_vms'] + groups['borg_cube_physical'] + groups['lab_workstations'] + groups['vm_workstations'] }}"
+
+- name: Ensure openscap scanner installed and a conversion tool
+  package:
+    state: latest
+    name: 
+      - openscap
+      - openscap-scanner
+      - openscap-utils
+      - scap-security-guide
+      - python3-html2text
+  when: ansible_distribution == 'Rocky'
+- name: Install python3-html2text from epel for RHEL systems
+  package:
+    enablerepo: epel
+    state: latest
+    name: python3-html2text
+  when: ansible_distribution == 'RedHat'
+
+- name: find ED keys 
+  find:
+    paths: /etc/ssh
+    patterns: ssh_host_ed25519*
+  register: ed_to_delete
+- name: remove the stupid Ed keys from host so the synchronize will work
+  file:
+    state: absent
+    path: /etc/ssh/{{ item.path }}
+  loop: "{{ ed_to_delete.files }}"
+- name: mask the ed25519 so keys aren't regenerated
+  systemd_service:
+    name: sshd-keygen@ed25519.service
+    state: stopped
+    masked: true
+- name: restart sshd
+  systemd_service:
+    name: sshd
+    state: restarted
+        
+- name: Create a date stamp
+  shell: 'date +%Y%m%d'
+  register: tstamp
+
+- name: Make dir for storing results
+  file:
+    path: /home/scap
+    state: directory
+    owner: root
+    group: admins
+    mode: '2775'
+- name: Set acl
+  acl:
+    path: /home/scap
+    entity: admins
+    etype: group
+    state: present
+    permissions: rwx
+    recursive: true
+
+- name: Create the Latest to files to be dropped in
+  file:
+    path: /home/scap/Latest/{{ ansible_hostname }}
+    state: directory
+    owner: root
+    group: admins
+    mode: '2770'
+    recurse: true
+
+- name: to run the oscap
+  block:
+    - name: Run on Rocky Linux 9 run the full cui on physical and virtual hosts
+      command: 'oscap xccdf eval --report /home/scap/Latest/{{ ansible_hostname }}/{{ ansible_hostname }}-{{ tstamp.stdout }}.html --profile cui /usr/share/xml/scap/ssg/content/ssg-rl9-ds.xml'
+      ignore_errors: true
+      failed_when: false
+      when: ansible_distribution == 'Rocky' and ansible_distribution_major_version == '9'
+    - name: Run on RHEL 9 run the full cui on physical and virtual hosts
+      command: 'oscap xccdf eval --report /home/scap/Latest/{{ ansible_hostname }}/{{ ansible_hostname }}-{{ tstamp.stdout }}.html --profile cui /usr/share/xml/scap/ssg/content/ssg-rhel9-ds.xml'
+      ignore_errors: true
+      failed_when: false
+      when: ansible_distribution == 'RedHat' and ansible_distribution_major_version == '9'
+    - name: Run on Rocky Linux 8 
+      command: 'oscap xccdf eval --report /home/scap/Latest/{{ ansible_hostname }}/{{ ansible_hostname }}-{{ tstamp.stdout }}.html --profile cui /usr/share/xml/scap/ssg/content/ssg-rl8-ds.xml'
+      ignore_errors: true
+      failed_when: false
+      when: ansible_distribution == 'Rocky' and ansible_distribution_major_version == '8'
+    - name: Run on RHEL 8 
+      command: 'oscap xccdf eval --report /home/scap/Latest/{{ ansible_hostname }}/{{ ansible_hostname }}-{{ tstamp.stdout }}.html --profile cui /usr/share/xml/scap/ssg/content/ssg-rhel8-ds.xml'
+      ignore_errors: true
+      failed_when: false
+      when: ansible_distribution == 'RedHat' and ansible_distribution_major_version == '8'
+    - name: Convert html to text
+      shell: 
+        cmd: html2text --ignore-images /home/scap/Latest/{{ ansible_hostname }}/{{ ansible_hostname }}-{{ tstamp.stdout }}.html > /home/scap/Latest/{{ ansible_hostname }}/{{ ansible_hostname }}-{{ tstamp.stdout }}.txt
+    - name: Get the hosts current score
+      shell:
+        cmd: grep -A 4 'Scoring system' /home/scap/Latest/{{ ansible_hostname }}/{{ ansible_hostname }}-{{ tstamp.stdout }}.txt | tail -n 1
+      register: the_score
+    - name: Copy results to file 
+      lineinfile:
+        state: present
+        mode: '0644'
+        group: admins
+        insertafter: EOF
+        path: /tank/projects/IT/SCAP/Latest/theScores.txt
+        line: "{{ ansible_hostname }} {{the_score.stdout}}{{ tstamp.stdout }}"
+      delegate_to: localhost
+    - name: Get 
+      fetch: 
+        src: /home/scap/Latest/{{ ansible_hostname }}/{{ ansible_hostname }}-{{ tstamp.stdout }}.html
+        dest: /tank/projects/IT/SCAP/Latest/{{ ansible_hostname }}/
+        flat: yes
+  when: 
+    - inventory_hostname in my_servers
+    - ansible_distribution == 'RedHat' or ansible_distribution == 'Rocky'
+
+- name: run customized oscap for others
+  block:
+    - name: Copy customized SSG RL9 systems
+      copy:
+        src: ssg-rl9-ds-tailoring.xml
+        dest: /usr/share/xml/scap/ssg/content/
+        mode: '0644'
+        owner: root
+        group: root
+      when: ansible_distribution == 'Rocky' and ansible_distribution_major_version == '9'
+    - name: Copy customized SSG RHEL9 systems
+      copy:
+        src: ssg-rhel9-ds-tailoring.xml
+        dest: /usr/share/xml/scap/ssg/content/
+        mode: '0644'
+        owner: root
+        group: root
+      when: ansible_distribution == 'RedHat' and ansible_distribution_major_version == '9'
+    - name: Copy customized SSG RL8 systems
+      copy:
+        src: ssg-rl8-ds-tailoring.xml
+        dest: /usr/share/xml/scap/ssg/content/
+        mode: '0644'
+        owner: root
+        group: root
+      when: ansible_distribution == 'Rocky' and ansible_distribution_major_version == '8'
+    - name: Run on Rocky Linux 9 customized workstation SSG
+      command: 'oscap xccdf eval --report /home/scap/Latest/{{ ansible_hostname }}/{{ ansible_hostname }}-{{ tstamp.stdout }}.html --profile xccdf_org.ssgproject.content_profile_cui_workstation_customized /usr/share/xml/scap/ssg/content/ssg-rl9-ds-tailoring.xml'
+      ignore_errors: true
+      failed_when: false
+      when: ansible_distribution == 'Rocky' and ansible_distribution_major_version == '9'
+    - name: Run on RHEL 9 customiezed workstion SSG
+      command: 'oscap xccdf eval --report /home/scap/Latest/{{ ansible_hostname }}/{{ ansible_hostname }}-{{ tstamp.stdout }}.html --profile xccdf_org.ssgproject.content_profile_cui_workstation_customized /usr/share/xml/scap/ssg/content/ssg-rhel9-ds-tailoring.xml'
+      ignore_errors: true
+      failed_when: false
+      when: ansible_distribution == 'Redhat' and ansible_distribution_major_version == '9'
+    - name: Run on Rocky Linux 8 customized workstation SSG
+      command: 'oscap xccdf eval --report /home/scap/Latest/{{ ansible_hostname }}/{{ ansible_hostname }}-{{ tstamp.stdout }}.html --profile xccdf_org.ssgproject.content_profile_cui_workstation_customized /usr/share/xml/scap/ssg/content/ssg-rl8-ds-tailoring.xml'
+      ignore_errors: true
+      failed_when: false
+      when: ansible_distribution == 'Rocky' and ansible_distribution_major_version == '8'
+    - name: Convert html to text
+      shell: 
+        cmd: html2text --ignore-images /home/scap/Latest/{{ ansible_hostname }}/{{ ansible_hostname }}-{{ tstamp.stdout }}.html > /home/scap/Latest/{{ ansible_hostname }}/{{ ansible_hostname }}-{{ tstamp.stdout }}.txt
+    - name: Get the hosts current score
+      shell:
+        cmd: grep -A 4 'Scoring system' /home/scap/Latest/{{ ansible_hostname }}/{{ ansible_hostname }}-{{ tstamp.stdout }}.txt | tail -n 1
+      register: the_score
+    - name: Copy results to file 
+      lineinfile:
+        state: present
+        mode: '0644'
+        group: admins
+        insertafter: EOF
+        path: /tank/projects/IT/SCAP/Latest/theScores.txt
+        line: "{{ ansible_hostname }} {{the_score.stdout}}{{ tstamp.stdout }}"
+      delegate_to: localhost
+    - name: Get 
+      fetch: 
+        src: /home/scap/Latest/{{ ansible_hostname }}/{{ ansible_hostname }}-{{ tstamp.stdout }}.html
+        dest: /tank/projects/IT/SCAP/Latest/{{ ansible_hostname }}/
+        flat: yes
+  when: 
+    - inventory_hostname in my_workstations
+    - ansible_distribution == 'RedHat' or ansible_distribution == 'Rocky'

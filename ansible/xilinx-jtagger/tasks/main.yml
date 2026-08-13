@@ -1,0 +1,14 @@
+---
+# Genericization variables:
+#   Provide internal DNS domains, service URLs, hostnames, IPs, tokens, and deployment paths through inventory, group_vars, host_vars, Ansible Vault, or --extra-vars before use.
+# Eventually, this would be a good spot to put the Xilinx cable driver installation
+
+- name: Open up firewall for Xilinx hw_server
+  firewalld:
+    port: "{{ item }}"
+    permanent: yes
+    state: enabled
+  loop:
+    - 3121/tcp
+
+

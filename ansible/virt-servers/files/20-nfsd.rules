@@ -1,0 +1,2 @@
+allow perm=any exe=/usr/sbin/nfsd : all
+allow perm=open exe=/usr/sbin/nfsd : ftype=application/x-sharedlib

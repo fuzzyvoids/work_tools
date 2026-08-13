@@ -1,0 +1,176 @@
+---
+# Genericization variables:
+#   Provide internal DNS domains, service URLs, hostnames, IPs, tokens, and deployment paths through inventory, group_vars, host_vars, Ansible Vault, or --extra-vars before use.
+# Installs all of the Zabbix repos manually if they don't already exist
+# If they DO exist, edits them to point to {{ internal_mirror_hostname }} instead of repo.zabbix.com
+# Copies the GPG key from the mirror server via HTTP and puts it in the right place w/ right permissions
+# By default, ALL of these repos are set to enabled=0 EXCEPT for [zabbix] which is enabled=1
+# That is the repo which contains zabbix-agent2 which is required for client devices
+# Right now, the only repo which is mirrored is for Rocky 9, however, this role should
+# work for other versions of Rocky if/when those repos are mirrored
+#  -genericized 8/29/25
+
+- name: set repo files
+  set_fact:
+    repos:
+      - "/etc/yum.repos.d/zabbix.repo"
+      - "/etc/yum.repos.d/zabbix-release.repo"
+      - "/etc/yum.repos.d/zabbix-tools.repo"
+      - "/etc/yum.repos.d/zabbix-third-party.repo"
+      - "/etc/yum.repos.d/zabbix-unstable.repo"
+
+- name: curl down zabbix rpm key
+  ansible.builtin.get_url:
+    url: "{{ internal_mirror_base_url }}/zabbix/RPM-GPG-KEY-ZABBIX-B5333005"
+    dest: /etc/pki/rpm-gpg/
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: check for zabbix repo
+  stat:
+    path: "/etc/yum.repos.d/zabbix.repo"
+  register: zabbix_repo_exists
+
+- name: creates zabbix repo if it doesn't exist
+  ansible.builtin.blockinfile:
+    path: "/etc/yum.repos.d/zabbix.repo"
+    owner: root
+    group: root
+    mode: '0644'
+    create: true
+    block: |
+      [zabbix]
+      name=Zabbix Official Repository - $basearch
+      baseurl={{ internal_mirror_base_url }}/zabbix/7.4/stable/rocky/9/$basearch/
+      enabled=1
+      gpgcheck=1
+      gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-ZABBIX-B5333005
+      
+      [zabbix-debuginfo]
+      name=Zabbix Official Repository (debuginfo) - $basearch
+      baseurl={{ internal_mirror_base_url }}/zabbix/7.4/stable/rocky/9/$basearch/debuginfo/
+      enabled=0
+      gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-ZABBIX-B5333005
+      gpgcheck=1
+      
+      [zabbix-sources]
+      name=Zabbix Official Repository (sources) - $basearch
+      baseurl={{ internal_mirror_base_url }}/zabbix/7.4/stable/rocky/9/SRPMS/
+      enabled=0
+      gpgcheck=1
+      gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-ZABBIX-B5333005
+  when: not zabbix_repo_exists.stat.exists
+
+- name: check for zabbix-release repo
+  stat:
+    path: "/etc/yum.repos.d/zabbix-release.repo"
+  register: zabbix_release_repo_exists
+
+- name: creates zabbix-release repo if it doesn't exist
+  ansible.builtin.blockinfile:
+    path: "/etc/yum.repos.d/zabbix-release.repo"
+    owner: root
+    group: root
+    mode: '0644'
+    create: true
+    block: |
+      [zabbix-release]
+      name=Zabbix Official Repository (release packages) - noarch
+      baseurl={{ internal_mirror_base_url }}/zabbix/7.4/release/rocky/9/noarch/
+      enabled=0
+      gpgcheck=1
+      gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-ZABBIX-B5333005
+  when: not zabbix_release_repo_exists.stat.exists
+
+- name: check for zabbix-tools repo
+  stat:
+    path: "/etc/yum.repos.d/zabbix-tools.repo"
+  register: zabbix_tools_repo_exists
+
+- name: creates zabbix-tools repo if it doesn't exist
+  ansible.builtin.blockinfile:
+    path: "/etc/yum.repos.d/zabbix-tools.repo"
+    owner: root
+    group: root
+    mode: '0644'
+    create: true
+    block: |
+      [zabbix-tools]
+      name=Zabbix Official Repository (tools) - $basearch
+      baseurl={{ internal_mirror_base_url }}/zabbix-tools/rhel/9/$basearch/
+      enabled=0
+      gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-ZABBIX-TOOLS
+      gpgcheck=1
+      
+      [zabbix-tools-sources]
+      name=Zabbix Official Repository (tools - sources) - $basearch
+      baseurl={{ internal_mirror_base_url }}/zabbix-tools/rhel/9/SRPMS/
+      enabled=0
+      gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-ZABBIX-TOOLS
+      gpgcheck=1
+  when: not zabbix_tools_repo_exists.stat.exists
+
+- name: check for zabbix-third-party repo
+  stat:
+    path: "/etc/yum.repos.d/zabbix-third-party.repo"
+  register: zabbix_third_party_repo_exists
+
+- name: creates zabbix-third-party repo if it doesn't exist
+  ansible.builtin.blockinfile:
+    path: "/etc/yum.repos.d/zabbix-third-party.repo"
+    owner: root
+    group: root
+    mode: '0644'
+    create: true
+    block: |
+      [zabbix-third-party]
+      name=Zabbix Official Repository (third-party) - $basearch
+      baseurl={{ internal_mirror_base_url }}/third-party/2024-10/rocky/9/$basearch/
+      enabled=0
+      gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-ZABBIX-B5333005
+      gpgcheck=1
+  when: not zabbix_third_party_repo_exists.stat.exists
+
+- name: check for zabbix-unstable repo
+  stat:
+    path: "/etc/yum.repos.d/zabbix-unstable.repo"
+  register: zabbix_unstable_repo_exists
+
+- name: creates zabbix-unstable repo if it doesn't exist
+  ansible.builtin.blockinfile:
+    path: "/etc/yum.repos.d/zabbix-unstable.repo"
+    owner: root
+    group: root
+    mode: '0644'
+    create: true
+    block: |
+      [zabbix-unstable]
+      name=Zabbix Official Repository (unstable) - $basearch
+      baseurl=https://repo.zabbix.com/zabbix/7.4/unstable/rocky/9/$basearch/
+      enabled=0
+      gpgcheck=1
+      gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-ZABBIX-B5333005
+      
+      [zabbix-unstable-debuginfo]
+      name=Zabbix Official Repository (unstable debuginfo) - $basearch
+      baseurl=https://repo.zabbix.com/zabbix/7.4/rocky/9/$basearch/debuginfo/
+      enabled=0
+      gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-ZABBIX-B5333005
+      gpgcheck=1
+      
+      [zabbix-unstable-sources]
+      name=Zabbix Official Repository (unstable - sources) - $basearch
+      baseurl=https://repo.zabbix.com/zabbix/7.4/unstable/rocky/9/SRPMS/
+      enabled=0
+      gpgcheck=1
+      gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-ZABBIX-B5333005
+  when: not zabbix_unstable_repo_exists.stat.exists
+
+- name: Replace repo.zabbix.com with {{ internal_mirror_hostname }} (if repos already exist)
+  replace:
+    path: "{{ item }}"
+    regexp: 'repo.zabbix.com'
+    replace: '{{ internal_mirror_hostname }}.{{ internal_dns_domain }}'
+  loop: "{{ repos }}"
+ 

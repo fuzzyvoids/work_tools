@@ -1,0 +1,57 @@
+---
+# Genericization variables:
+#   Provide internal DNS domains, service URLs, hostnames, IPs, tokens, and deployment paths through inventory, group_vars, host_vars, Ansible Vault, or --extra-vars before use.
+# Install Tang server to enable network bound disk encryption
+
+- name: Install tang
+  yum:
+    name: tang
+    state: present
+
+- name: Add tangd.socket systemd override directory
+  file:
+    path: /etc/systemd/system/tangd.socket.d
+    mode: "0755"
+    state: directory
+
+- name: Create tang port override
+  blockinfile:
+    path: /etc/systemd/system/tangd.socket.d/override.conf
+    mode: "0644"
+    block: |
+      [Socket]
+      ListenStream=
+      ListenStream={{ tang_port }}
+    state: present
+    create: yes
+
+- name: Install semanage tool CentOS 7
+  yum:
+    name: policycoreutils-python
+  when: ansible_distribution_major_version == "7"
+
+- name: Install semanage tool CentOS 8/9
+  yum:
+    name: policycoreutils-python-utils
+  when: (ansible_distribution_major_version == "8") or (ansible_distribution_major_version == "9")
+
+- name: Let tang use a port
+  seport:
+    ports: "{{ tang_port }}"
+    proto: tcp
+    setype: tangd_port_t
+    state: present
+
+- name: Open up firewall
+  firewalld:
+    port: "{{ tang_port }}/tcp"
+    immediate: yes
+    permanent: yes
+    state: enabled
+
+- name: Start and enable tang server
+  systemd:
+    name: tangd.socket
+    enabled: yes
+    daemon_reload: yes
+    state: started

@@ -1,0 +1,16 @@
+---
+# Data Server role
+# This should be used one machine at a time.
+# You must set the luks_device to the correct device or it will not work.
+# It assumes that this is a brand new server install, but should work on existing servers as well.
+# If this is a new server, you MUST update the server afterwords or you will not be able to boot.
+- hosts: data_servers
+  vars:
+    luks_device: /dev/sda3
+  roles:
+    - rocky-9-repos
+    - auto-unlock-disk
+    - zfs-on-linux
+    - rocky-9-minimal-plus
+    - nfs-server
+    - deploy_elastic_agent

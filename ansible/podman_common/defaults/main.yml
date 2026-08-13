@@ -1,0 +1,19 @@
+---
+# Genericization variables:
+#   Provide internal DNS domains, service URLs, hostnames, IPs, tokens, and deployment paths through inventory, group_vars, host_vars, Ansible Vault, or --extra-vars before use.
+# GitLab Runner Variables
+# These variables use the namespace `pc_` for Podman Common.
+
+# List of unqualified search registries. The first entry is the "default" entry
+# and is what "podman login" will try first. Therefore, the first entry should
+# be our GitLab instance.
+pc_unqualified_search_registries:
+  - "{{ internal_gitlab_hostname }}.{{ internal_dns_domain }}:5050"
+  - "docker.io"
+
+
+# Extra registry redirects. Needs to be in the form of
+# [{ "registry": "hostname", "redirect": "redirect-with-path"}, ...] See
+# vars/main.yml for the examples of the main redirects.
+pc_extra_registry_redirects: []
+

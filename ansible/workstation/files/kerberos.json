@@ -1,0 +1,4 @@
+{
+    "_genericization_comment" : "Set internal_dns_domain before templating or deploying this managed browser policy.",
+    "AuthServerWhitelist" : "*.{{ internal_dns_domain }}"
+}

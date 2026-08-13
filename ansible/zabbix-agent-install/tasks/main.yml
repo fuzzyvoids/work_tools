@@ -1,0 +1,42 @@
+---
+# Genericization variables:
+#   Provide internal DNS domains, service URLs, hostnames, IPs, tokens, and deployment paths through inventory, group_vars, host_vars, Ansible Vault, or --extra-vars before use.
+- name: Ensure zabbix-agent2 is installed
+  package:
+    name: zabbix-agent2
+    state: present
+
+- name: Backup existing conf if present
+  copy:
+    src: "{{ zbx_conf_path }}"
+    dest: "{{ zbx_conf_path }}.pre-ansible.bak"
+    remote_src: true
+  ignore_errors: true  # in case file doesn't exist
+
+- name: Deploy baseline config (Hostname left as ReplaceMeNow)
+  template:
+    src: "zabbix_agent2.conf.j2"
+    dest: "{{ zbx_conf_path }}"
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Set Hostname to actual value
+  lineinfile:
+    path: "{{ zbx_conf_path }}"
+    regexp: '^Hostname\s*=.*$'
+    line: "Hostname={{ zbx_hostname }}"
+    backrefs: false
+
+- name: Enable and restart zabbix-agent2
+  systemd:
+    name: zabbix-agent2
+    enabled: true
+    state: restarted
+
+- name: Open Zabbix Agent Port for communication
+  ansible.posix.firewalld:
+    port: 10050/tcp
+    permanent: true
+    immediate: true
+    state: enabled

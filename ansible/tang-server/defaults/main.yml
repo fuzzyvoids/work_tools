@@ -1,0 +1,4 @@
+---
+
+# The port that tang should listen on
+tang_port: 7500

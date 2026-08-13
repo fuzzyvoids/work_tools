@@ -1,0 +1,116 @@
+---
+# Genericization variables:
+#   Provide internal DNS domains, service URLs, hostnames, IPs, tokens, and deployment paths through inventory, group_vars, host_vars, Ansible Vault, or --extra-vars before use.
+- name: Setup PCoIP agent configuration
+  blockinfile:
+    marker: "# {mark} ANSIBLE MANAGED BLOCK"
+    block: |
+      pcoip.license_server_path = http://{{ pcoip_license_server_hostname }}.{{ internal_dns_domain }}:7070/request
+      pcoip.ssl_cert_type = 1
+      pcoip.ssl_cert_min_key_length = 3072
+      pcoip.enable_usb = 0
+      pcoip.server_clipboard_state = 0
+      pcoip.enable_audio = 0
+      pcoip.enbable_colloboration = 0
+    dest: /etc/pcoip-agent/pcoip-agent.conf
+    create: yes
+  notify: restart pcoip
+
+- name: Open up firewall for PCoIP
+  firewalld:
+    port: "{{ item }}"
+    permanent: yes
+    state: enabled
+  loop:
+    - 443/tcp
+    - 4172/tcp
+    - 4172/udp
+    - 60443/tcp
+
+- name: Install xsecurelock for screenlocker
+  yum:
+    enablerepo: epel
+    name:
+      - xsecurelock
+    state: present
+
+- name: Get package facts to see if gnome-classic-session is installed
+  package_facts:
+
+- name: Install gnome-screensaver
+  yum:
+    name:
+      - xscreensaver
+      - multiwatch
+    state: latest
+    enablerepo: powertools
+  when: ansible_distribution_major_version == '8'
+  tags:
+    - screensaver
+
+- name: Install gnome-screensaver
+  yum:
+    name:
+      - xscreensaver
+      - multiwatch
+    state: latest
+  when: ansible_distribution_major_version == '9'
+  tags:
+    - screensaver
+
+- name: Configure gsettings for screensaver
+  blockinfile:
+    create: yes
+    path: /etc/dconf/db/local.d/00-screensaver
+    block: |
+      [org/gnome/desktop/session]
+      idle-delay=uint32 900
+      [org/gnome/desktop/screensaver]
+      lock-enabled=true
+      lock-delay=uint32 5
+  notify: reload dconf
+  tags:
+    - screensaver
+
+- name: Lock down screensaver settings
+  blockinfile:
+    create: yes
+    path: /etc/dconf/db/local.d/locks/screensaver
+    block: |
+      /org/gnome/desktop/session/idle-delay
+      /org/gnome/desktop/screensaver/lock-enabled
+      /org/gnome/desktop/screensaver/lock-delay
+  notify: reload dconf
+  tags:
+    - screensaver
+
+- name: Make sure screensaver starts at login
+  blockinfile:
+    create: yes
+    path: /etc/xdg/autostart/screensaver.desktop
+    block: |
+      [Desktop Entry]
+      Type=Application
+      Name=Screensaver for Lock Screen
+      Exec=multiwatch /usr/bin/gnome-screensaver
+  notify: reload dconf
+  tags:
+    - screensaver
+
+- name: Enable gnome-classic Activities Overview
+  lineinfile:
+    path: /usr/share/gnome-shell/modes/classic.json
+    regexp: '^\s*"hasOverview"'
+    line: '    "hasOverview": true,'
+  when: "'gnome-classic-session' in ansible_facts.packages"
+  tags:
+    - fix_after_update
+
+- name: Fix pam postlogin setting that breaks PCoIP
+  lineinfile:
+    path: /etc/pam.d/postlogin
+    backrefs: yes
+    regexp: '^(\s*session\s+(?:optional|required)\s+pam_lastlog.so(?:(?! silent\b).)*)( silent)?(.*)$'
+    line: '\1 silent\3'
+  tags:
+    - fix_after_update

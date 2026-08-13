@@ -1,0 +1,95 @@
+---
+# Genericization variables:
+#   Provide internal DNS domains, service URLs, hostnames, IPs, tokens, and deployment paths through inventory, group_vars, host_vars, Ansible Vault, or --extra-vars before use.
+- name: Install deps
+  dnf:
+    enablerepo: crb
+    name:
+      - git
+      # Following are requirements of sanoid
+      - perl-Config-IniFiles
+      - perl-Data-Dumper
+      - perl-Capture-Tiny
+      - perl-Getopt-Long
+      - lzop
+      - mbuffer
+      - mhash
+      - pv
+    state: present
+
+- name: Clone sanoid repo
+  git:
+    repo: https://github.com/jimsalterjrs/sanoid.git
+    dest: /tmp/sanoid
+    version: v2.3.0
+  changed_when: false
+
+- name: Copy executables
+  copy:
+    src: "{{ item }}"
+    dest: /usr/local/sbin/
+    mode: "0755"
+    remote_src: true
+  loop:
+    - /tmp/sanoid/sanoid
+    - /tmp/sanoid/syncoid
+    - /tmp/sanoid/findoid
+    - /tmp/sanoid/sleepymutex
+
+- name: Create sanoid configuration dir
+  file:
+    path: /etc/sanoid
+    mode: "0755"
+    state: directory
+
+
+- name: Copy defaults
+  copy:
+    src: /tmp/sanoid/sanoid.defaults.conf
+    dest: /etc/sanoid/
+    mode: "0644"
+    remote_src: true
+
+- name: Copy sanoid config file
+  blockinfile:
+    path: /etc/sanoid/sanoid.conf
+    mode: "0664"
+    create: yes
+    block: "{{ sanoid_conf | default('') }}"
+
+- name: Copy sample
+  copy:
+    src: /tmp/sanoid/sanoid.conf
+    dest: /etc/sanoid/sanoid.example.conf
+    mode: "0664"
+    remote_src: true
+
+- name: Add sanoid systemd files
+  copy:
+    src: "{{ item }}"
+    dest: /etc/systemd/system/
+    mode: "0644"
+  loop:
+    - systemd/sanoid.service
+    - systemd/sanoid-prune.service
+    - systemd/sanoid.timer
+  register: systemd_files
+
+- name: Enable sanoid-prune service
+  systemd_service:
+    name: sanoid-prune.service
+    enabled: true
+    daemon_reload: true
+
+- name: Enable sanoid timer
+  systemd_service:
+    name: sanoid.timer
+    enabled: true
+    state: started
+
+
+- name: Remove git clone
+  file:
+    path: /tmp/sanoid
+    state: absent
+  changed_when: false

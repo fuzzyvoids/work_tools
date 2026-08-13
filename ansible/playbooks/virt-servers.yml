@@ -1,0 +1,4 @@
+---
+- hosts: mccoy
+  roles:
+    - virt-servers

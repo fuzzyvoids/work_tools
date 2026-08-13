@@ -1,0 +1,7 @@
+## -- Run on DS0101 
+## -- Run with <username>.admin account
+
+
+- hosts: all
+  roles:
+    - oscap

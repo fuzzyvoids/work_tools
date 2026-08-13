@@ -1,0 +1,12 @@
+---
+# Genericization variables:
+#   Provide internal DNS domains, service URLs, hostnames, IPs, tokens, and deployment paths through inventory, group_vars, host_vars, Ansible Vault, or --extra-vars before use.
+# This should only be used for VMs running on the host vh0101
+
+- name: Mount tools from VH0101 onto a local VM
+  mount:
+    src: "{{ tools_nfs_export }}"
+    fstype: nfs
+    path: "{{ shared_tools_path }}"
+    state: mounted
+

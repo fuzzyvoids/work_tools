@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xccdf:Tailoring xmlns:xccdf="http://checklists.nist.gov/xccdf/1.2" id="xccdf_scap-workbench_tailoring_default">
+  <xccdf:benchmark href="/usr/share/xml/scap/ssg/content/ssg-rl8-ds.xml"/>
+  <xccdf:version time="2026-01-08T14:17:15">1</xccdf:version>
+  <xccdf:Profile id="xccdf_org.ssgproject.content_profile_cui_workstation_customized2" extends="xccdf_org.ssgproject.content_profile_cui">
+    <xccdf:title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US" override="true">Unclassified Information in Non-federal Information Systems and Organizations (NIST 800-171) [CUSTOMIZED]</xccdf:title>
+    <xccdf:description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US" override="true">From NIST 800-171, Section 2.2:
+Security requirements for protecting the confidentiality of CUI in nonfederal
+information systems and organizations have a well-defined structure that
+consists of:
+
+(i) a basic security requirements section;
+(ii) a derived security requirements section.
+
+The basic security requirements are obtained from FIPS Publication 200, which
+provides the high-level and fundamental security requirements for federal
+information and information systems. The derived security requirements, which
+supplement the basic security requirements, are taken from the security controls
+in NIST Special Publication 800-53.
+
+This profile configures Red Hat Enterprise Linux 8 to the NIST Special
+Publication 800-53 controls identified for securing Controlled Unclassified
+Information (CUI)."</xccdf:description>
+    <xccdf:select idref="xccdf_org.ssgproject.content_rule_dnf-automatic_apply_updates" selected="false"/>
+    <xccdf:select idref="xccdf_org.ssgproject.content_rule_dnf-automatic_security_updates_only" selected="false"/>
+    <xccdf:select idref="xccdf_org.ssgproject.content_rule_timer_dnf-automatic_enabled" selected="false"/>
+    <xccdf:select idref="xccdf_org.ssgproject.content_rule_enable_authselect" selected="false"/>
+    <xccdf:select idref="xccdf_org.ssgproject.content_rule_accounts_passwords_pam_faillock_deny" selected="false"/>
+    <xccdf:select idref="xccdf_org.ssgproject.content_rule_accounts_passwords_pam_faillock_interval" selected="false"/>
+    <xccdf:select idref="xccdf_org.ssgproject.content_rule_accounts_passwords_pam_faillock_unlock_time" selected="false"/>
+    <xccdf:select idref="xccdf_org.ssgproject.content_rule_no_empty_passwords" selected="false"/>
+    <xccdf:select idref="xccdf_org.ssgproject.content_group_password_storage" selected="false"/>
+    <xccdf:select idref="xccdf_org.ssgproject.content_rule_grub2_vsyscall_argument" selected="false"/>
+    <xccdf:select idref="xccdf_org.ssgproject.content_rule_sysctl_user_max_user_namespaces" selected="false"/>
+    <xccdf:select idref="xccdf_org.ssgproject.content_rule_service_fapolicyd_enabled" selected="false"/>
+    <xccdf:select idref="xccdf_org.ssgproject.content_rule_kerberos_disable_no_keytab" selected="false"/>
+    <xccdf:select idref="xccdf_org.ssgproject.content_group_kerberos" selected="false"/>
+    <xccdf:select idref="xccdf_org.ssgproject.content_rule_package_nfs-utils_removed" selected="false"/>
+    <xccdf:select idref="xccdf_org.ssgproject.content_group_nfs_and_rpc" selected="false"/>
+    <xccdf:select idref="xccdf_org.ssgproject.content_rule_ssh_client_rekey_limit" selected="true"/>
+    <xccdf:select idref="xccdf_org.ssgproject.content_rule_sshd_disable_gssapi_auth" selected="false"/>
+    <xccdf:select idref="xccdf_org.ssgproject.content_rule_sshd_rekey_limit" selected="false"/>
+    <xccdf:select idref="xccdf_org.ssgproject.content_rule_sshd_limit_user_access" selected="false"/>
+    <xccdf:select idref="xccdf_org.ssgproject.content_rule_service_usbguard_enabled" selected="false"/>
+  </xccdf:Profile>
+</xccdf:Tailoring>

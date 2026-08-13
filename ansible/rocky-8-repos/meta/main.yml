@@ -1,0 +1,4 @@
+---
+
+dependencies:
+  - role: darknet-ca-subscriber

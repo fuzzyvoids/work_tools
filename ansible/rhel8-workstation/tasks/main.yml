@@ -1,0 +1,454 @@
+---
+# Genericization variables:
+#   Provide internal DNS domains, service URLs, hostnames, IPs, tokens, and deployment paths through inventory, group_vars, host_vars, Ansible Vault, or --extra-vars before use.
+- name: Disable deltarpms in yum
+  blockinfile:
+    marker: "# {mark} ANSIBLE MANAGED BLOCK - Disable deltarpms"
+    block: |
+      deltarpm=0
+    dest: /etc/yum.conf
+    create: yes
+    backup: yes
+
+# Will be installed via Kickstart for Rocky
+- name: Install epel
+  yum:
+    name: epel-release
+    state: present
+  tags:
+    - yum
+
+# Install of epel requires CRB repo to be enabled 
+- name: Set the CRB repo to enabled 
+  ini_file:
+    path: /etc/yum.repos.d/rocky.repo
+    section: crb
+    option: enabled
+    value: 1
+  when: ansible_distribution_major_version == '9'
+
+- name: Add Idaho Scientific repository
+  yum_repository:
+    name: org_packages
+    description: Organization Packages
+    baseurl: "{{ internal_mirror_base_url }}/org_packages"
+    gpgcheck: no
+  tags:
+    - repo-files
+
+- name: Add Libre Office 7.3 repository
+  yum_repository:
+    name: libre-office
+    description: Libre Office Still Version Packages
+    baseurl: "{{ internal_mirror_base_url }}/yum/libre-office "
+    gpgcheck: no
+    enabled: no
+  tags:
+    - repo-files
+
+- name: Install packages
+  yum:
+    name: "{{ packages }}"
+    state: present
+    update_cache: yes
+    disablerepo: epel
+    exclude: 
+      - firstboot
+      - gnome-initial-setup
+      - hyperv-daemons
+  vars:
+    packages:
+      - "@base"
+      - "@core"
+      - "@desktop-debugging"
+      - "@dial-up"
+      - "@fonts"
+      - "@gnome-desktop"
+      - "@guest-agents"
+      - "@guest-desktop-agents"
+      - "@input-methods"
+      - "@internet-browser"
+      - "@java-platform"
+      - "@multimedia"
+      - "@networkmanager-submodules"
+      - "@print-client"
+      - wayland-protocols-devel
+      - xorg-x11-drv-libinput
+      - "@development"
+      - "@graphics"
+      - "@office-suite"
+      - kexec-tools
+      - tmux
+      - cmake
+      - thunderbird
+      - telnet
+      - tcpdump
+      - tree
+      - wget
+      - brasero
+      - nasm
+      - iasl
+      - libuuid-devel
+      - nc
+      - minicom
+      - dconf
+      - hplip
+      - libpng15
+      - libpng15.i686
+      - glib2-devel
+      - python3
+      - vim-X11
+      - graphviz
+      - openssl
+      - libXScrnSaver
+      - gcc
+      - gcc-c++
+      - kernel-headers
+      - kernel-devel
+      - ansible-core
+      - xorg-x11-server-Xvfb
+      - git-lfs
+      - gnome-tweak-tool
+      - virt-manager
+      - evince
+      - code
+      - postfix
+      - gnome-shell-extension-permanent-notifications
+      - gnome-shell-extension-notifications-alert-on-user-menu
+      - mattermost-desktop
+  tags:
+    - yum
+
+- name: Make sure postfix is started and enabled
+  systemd_service:
+    name: postfix
+    state: started
+    enabled: true 
+
+- name: Install packages from epel
+  yum:
+    name: "{{ packages }}"
+    state: present
+    update_cache: yes
+    enablerepo: epel
+  vars:
+    packages: 
+      - git-cola
+      - the_silver_searcher
+      - neovim
+      - chromium
+      - clamav
+      - clamav-data.noarch
+      - python3-neovim
+      - tig
+      - htop
+      - ack
+      - meld
+      - duplicity
+      - pv
+      - pandoc
+      - latexmk
+      - gnuplot
+  tags:
+    - yum
+
+- name: Add packages from devel needed for Xilinx and others
+  yum:
+    enablerepo: devel
+    state: present
+    name: 
+      - ncurses-compat-libs
+      - redhat-lsb
+      - redhat-lsb-core
+        #- redhat-lsb-core.i686
+  tags:
+    - yum
+
+- name: Copy the draw.io that works for Rocky 
+  copy:
+    src: drawio-x86_64-22.1.2.rpm
+    dest: /tmp/drawio-x86_64-22.1.2.rpm
+
+- name: Check if drawio installed
+  command: rpm -qa | grep draw.io
+  register: drawio_installed
+  ignore_errors: true
+  check_mode: false
+  changed_when: false
+
+- name: print status of drawio installed
+  debug:
+    msg: "drawio is installed"
+  when: drawio_installed.rc == 0 
+
+- name: install the draw.io package
+  command: rpm -ihv --nodigest --nofiledigest /tmp/drawio-x86_64-22.1.2.rpm
+  when: drawio_installed.rc != 0
+
+- name: Remove packages
+  yum:
+    name: "{{ packages }}"
+    state: absent
+  vars:
+    packages:
+      - firstboot
+      - gnome-initial-setup
+      - hyperv-daemons
+  tags:
+    - yum
+
+- name: Make sure {{ shared_tools_path }}/ directory exists
+  file:
+    path: "{{ shared_tools_path }}"
+    state: directory
+    group: admins
+    mode: '2775'
+  tags: 
+    - tools
+
+- name: Set ACL for {{ shared_tools_path }}
+  acl:
+    path: "{{ shared_tools_path }}"
+    default: yes
+    entity: admins
+    etype: group
+    permissions: rwx
+    state: present
+  tags: 
+    - tools
+
+- name: Make sure /etc/dconf/profile directory exists
+  file:
+    path: /etc/dconf/profile
+    state: directory
+  tags:
+    - dconf
+
+- name: Create gdm dconf profile
+  copy:
+    src: gdm.profile
+    dest: /etc/dconf/profile/gdm
+  notify: reload dconf
+  tags:
+    - dconf
+
+- name: Make sure dconf gdm.d directory exists
+  file:
+    path: /etc/dconf/db/gdm.d
+    state: directory
+  tags:
+    - dconf
+
+- name: Remove user list from the login screen
+  copy:
+    src: 01-gdm-disable-user-list
+    dest: /etc/dconf/db/gdm.d/01-gdm-disable-user-list
+    backup: yes
+  notify: reload dconf
+  tags:
+    - dconf
+
+- name: Add login screen banner message
+  copy:
+    src: 01-banner-message
+    dest: /etc/dconf/db/gdm.d/01-banner-message
+    backup: yes
+  notify: reload dconf
+  tags:
+    - dconf
+
+- name: Add login message of the day
+  copy:
+    src: motd
+    dest: /etc/motd
+  tags: 
+    - motd
+
+- name: Make sure /usr/share/org_packages directory exists
+  file:
+    path: /usr/share/org_packages
+    state: directory
+  tags:
+    - logo
+
+- name: Add Idaho Scientific Logo to system
+  copy:
+    src: logo.png
+    dest: /usr/share/org_packages/logo.png
+  tags:
+    - logo
+
+- name: Add Idaho Scientific Logo to Login Screen
+  copy:
+    src: 01-gdm-logo
+    dest: /etc/dconf/db/gdm.d/01-gdm-logo
+  notify: reload dconf
+  tags:
+    - logo
+
+- name: Add license file to environment by default
+  lineinfile:
+    path: /etc/profile.d/licensing.sh
+    line: export LM_LICENSE_FILE="{{ lm_license_file }}@licenseserver"
+    state: present
+    create: yes
+
+- name: Make sure /etc/chromium/policies/managed/ exists
+  file:
+    path: /etc/chromium/policies/managed
+    state: directory
+  tags:
+    - chromium
+
+- name: Add chromium kerberos policy
+  copy:
+    src: kerberos.json
+    dest: /etc/chromium/policies/managed/kerberos.json
+  tags:
+    - chromium
+
+- name: Kerberos fix to use canonical names by default
+  lineinfile:
+    regexp: '.*dns_canonicalize_hostname.*'
+    path: /etc/krb5.conf
+    state: absent
+  tags:
+    - krb5
+
+- name: Set user.max_user_namespaces
+  sysctl:
+    name: user.max_user_namespaces
+    value: "65536"
+    state: present
+
+- name: Add global pip configuration for internal network
+  blockinfile:
+    marker: "# {mark} ANSIBLE MANAGED BLOCK"
+    block: |
+      [global]
+      no-index = True
+      find-links = file:/share/mirrors/other/python/pip
+    dest: /etc/pip.conf
+    create: yes
+    backup: yes
+
+- name: Increase sysctl fs.inotify.max_user_watches for petalinux
+  sysctl:
+    name: fs.inotify.max_user_watches
+    value: "262144"
+    state: present
+
+- name: Give users the ability use virt-manager without sudo if in the libvirt group
+  blockinfile:
+    marker: "// {mark} ANSIBLE MANAGED BLOCK"
+    block: |
+      polkit.addRule(function(action, subject) {
+        if (action.id == "org.libvirt.unix.manage" && subject.local && subject.active && subject.isInGroup("libvirt")) {
+          return polkit.Result.YES;
+        }
+      });
+    dest: /etc/polkit-1/rules.d/80-libvirt.rules
+    create: yes
+    backup: no
+
+- name: Remove default servers
+  lineinfile:
+    path: /etc/chrony.conf
+    regexp: '^server\s+\d\.centos.pool.ntp.org.*'
+    state: absent
+  tags:
+    - chrony
+
+- name: Add ipa as time server
+  blockinfile:
+    marker: "# {mark} ANSIBLE MANAGED BLOCK"
+    block: |
+      server darksense.{{ internal_dns_domain }} iburst
+    dest: /etc/chrony.conf
+    backup: no
+  register: add_ipa_time_server
+  tags:
+    - chrony
+
+- name: Enable and start chronyd
+  systemd:
+    name: chronyd
+    state: restarted
+    enabled: yes
+  when: add_ipa_time_server.changed
+  tags:
+    - chrony
+
+- name: Enable git credentials cache for 10 hrs
+  blockinfile:
+    marker: "# {mark} ANSIBLE MANAGED BLOCK"
+    block: |
+      [credential]
+      	helper = cache --timeout=36000
+    dest: /etc/gitconfig
+    create: yes
+
+- name: Ensure sssd.conf has new hosts
+  replace: 
+    path: /etc/sssd/sssd.conf
+    regexp: 'ipa_server = _srv_,(.*$)'
+    replace: 'ipa_server = _srv_, {{ internal_ipa_primary_hostname }}.{{ internal_dns_domain }}, {{ internal_ipa_secondary_hostname }}.{{ internal_dns_domain }}'
+  notify: restart sssd
+  tags:
+    - sssd
+
+- name: Update icon cache for any newly installed applications
+  command: "gtk-update-icon-cache /usr/share/icons/hicolor/"
+  changed_when: false
+
+- name: Configure notifications extensions by default
+  blockinfile:
+    path: /etc/dconf/db/local.d/00-extensions
+    create: yes
+    mode: "0644"
+    block: |
+      [org/gnome/shell]
+      enabled-extensions=[ 'notifications-alert-on-user-menu@hackedbellini.gmail.com', 'permanent-notifications@bonzini.gnu.org' ]
+
+- name: Copy HP-Color-LaserJet-M452dn ppd file
+  copy:
+    src: hp-color_laserjet_m452d-ps.ppd
+    dest: /usr/share/ppd/HP/
+
+- name: Add Printer
+  command: lpadmin -p HP-Color-LaserJet-M452dn -E -v socket://{{ primary_printer_2_ip }} -P /usr/share/ppd/HP/hp-color_laserjet_m452d-ps.ppd
+
+- name: Check if texlive installed
+  stat:
+    path: /usr/local/texlive/2023
+  register: texlive_dir
+  tags:
+    - texlive
+
+- name: Install texlive from iso
+  block:
+    - name: Mount the texlive iso from share
+      command: 'mount -o loop /share/mirrors/other/latex/texlive2023.iso /mnt'
+    - name: Copy the texlive profile
+      copy:
+        src: texlive.profile
+        dest: /tmp/
+
+    - name: Start the install of textlive 
+      command: '/mnt/install-tl --profile=/tmp/texlive.profile' 
+      ignore_errors: true
+
+    - name: Un-Mount the iso when complete
+      command: 'umount /mnt'
+  when: not texlive_dir.stat.exists
+  tags:
+    - texlive
+
+- name: Set autoconnect on VM when br0
+  nmcli:
+    conn_name: br0
+    state: present
+    autoconnect: no
+    type: ethernet
+  when: ansible_facts['product_name'] == "KVM" and ansible_facts['distribution'] == "Rocky"
+

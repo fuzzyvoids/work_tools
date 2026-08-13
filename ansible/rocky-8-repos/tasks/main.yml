@@ -1,0 +1,66 @@
+---
+# Genericization variables:
+#   Provide internal DNS domains, service URLs, hostnames, IPs, tokens, and deployment paths through inventory, group_vars, host_vars, Ansible Vault, or --extra-vars before use.
+- name: set repo files
+  set_fact:
+    repos:
+      - "/etc/yum.repos.d/Rocky-AppStream.repo"
+      - "/etc/yum.repos.d/Rocky-BaseOS.repo"
+      - "/etc/yum.repos.d/Rocky-Debuginfo.repo"
+      - "/etc/yum.repos.d/Rocky-Devel.repo"
+      - "/etc/yum.repos.d/Rocky-Extras.repo"
+      - "/etc/yum.repos.d/Rocky-PowerTools.repo"
+      - "/etc/yum.repos.d/Rocky-Sources.repo"
+
+- name: Set baseurl to our url
+  replace:
+    path: "{{ item }}"
+    regexp: '#?baseurl=http://dl\.rockylinux\.org/\$contentdir/(.*$)'
+    replace: 'baseurl={{ internal_mirror_base_url }}/rocky/\1'
+  loop: "{{ repos }}"
+
+- name: Comment out mirror list
+  replace:
+    path: "{{ item }}"
+    regexp: '#?mirrorlist=(.*)'
+    replace: '#mirrorlist=\1'
+  loop: "{{ repos }}"
+
+- name: Install epel
+  yum:
+    disablerepo: epel*
+    name: epel-release
+    state: present
+  tags:
+    - yum
+
+- name: Set epel baseurl to our url
+  replace:
+    path: /etc/yum.repos.d/epel.repo
+    regexp: '#?baseurl=https://download\.example/pub/(.*$)'
+    replace: 'baseurl={{ internal_mirror_base_url }}/\1'
+
+- name: epel - Comment out the metalink
+  replace:
+    path: /etc/yum.repos.d/epel.repo
+    regexp: '#?metalink=(.*)'
+    replace: '#metalink=\1'
+
+- name: set unused repos
+  set_fact:
+    unused_repos:
+      - "/etc/yum.repos.d/epel-modular.repo"
+      - "/etc/yum.repos.d/epel-testing-modular.repo"
+      - "/etc/yum.repos.d/epel-testing.repo"
+      - "/etc/yum.repos.d/Rocky-HighAvailability.repo"
+      - "/etc/yum.repos.d/Rocky-NFV.repo"
+      - "/etc/yum.repos.d/Rocky-Plus.repo"
+      - "/etc/yum.repos.d/Rocky-ResilientStorage.repo"
+      - "/etc/yum.repos.d/Rocky-RT.repo"
+  
+- name: Disable repos not used
+  replace: 
+    path: "{{ item }}"
+    regexp: '^enabled=1' 
+    replace: 'enabled=0'
+  loop: "{{ unused_repos }}"

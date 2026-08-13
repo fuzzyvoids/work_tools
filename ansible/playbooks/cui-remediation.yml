@@ -1,0 +1,5 @@
+---
+- hosts: all
+  roles:
+    - { role: CUI-rl-rhel9, when: ansible_distribution_major_version == '9' }
+      #- { role: CUI-rl-rhel8, when: ansible_distribution_major_version == '8' }

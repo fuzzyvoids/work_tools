@@ -1,0 +1,17 @@
+---
+# Genericization variables:
+#   Provide internal DNS domains, service URLs, hostnames, IPs, tokens, and deployment paths through inventory, group_vars, host_vars, Ansible Vault, or --extra-vars before use.
+- name: check for {{ internal_ipa_hostname }} in /etc/ipa/default.conf to verify enrollment in new domain
+  shell: cat /etc/ipa/default.conf
+  register: ipa_domain
+
+- name: clean up certs
+  when: ipa_domain.stdout.find('server = {{ internal_ipa_hostname }}.{{ internal_dns_domain }}') != -1
+  block:
+    - name: if enrolled in {{ internal_ipa_hostname }}, remove ca.crt
+      ansible.builtin.file: 
+        path: /etc/pki/ca-trust/source/anchors/ca.crt
+        state: absent
+#     debug: msg="{{ internal_ipa_hostname }} found"
+    - name: update ca-trust
+      shell: update-ca-trust

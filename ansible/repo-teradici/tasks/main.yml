@@ -1,0 +1,51 @@
+---
+# Genericization variables:
+#   Provide internal DNS domains, service URLs, hostnames, IPs, tokens, and deployment paths through inventory, group_vars, host_vars, Ansible Vault, or --extra-vars before use.
+- name: set version for Rocky 8
+  set_fact:
+    major_version: "8"
+  when: ansible_distribution_major_version == "8"
+
+- name: set version for Rocky 9
+  set_fact:
+    major_version: "9"
+  when: ansible_distribution_major_version == "9"
+
+- name: Copy RPM key
+  copy:
+    src: RPM-GPG-KEY-teradici
+    dest: /etc/pki/rpm-gpg/
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Import RPM key
+  rpm_key:
+    state: present
+    key: /etc/pki/rpm-gpg/RPM-GPG-KEY-teradici
+
+- name: Setup teradici license server repo
+  yum_repository:
+    name: teradici-license-server
+    description: Teradici License Server
+    file: teradici
+    mode: "0644"
+    #baseurl: {{ legacy_repo_base_url }}/yum/teradici/8/teradici-{{ pcoip_license_server_hostname }}
+    baseurl: '{{ internal_mirror_http_base_url }}/yum/teradici/{{ major_version }}/teradici-{{ pcoip_license_server_hostname }}'
+    gpgcheck: yes
+    gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-teradici
+    enabled: "{{ repo_teradici_license_server_enabled }}"
+  when: repo_teradici_license_server
+
+- name: Setup PCoIP Agent repository
+  yum_repository:
+    name: teradici-pcoip-agent
+    description: Teradici PCoIP Agents
+    file: teradici
+    mode: "0644"
+    #baseurl: {{ legacy_repo_base_url }}/yum/teradici/8/teradici-pcoip-agent
+    baseurl: '{{ internal_mirror_http_base_url }}/yum/teradici/{{ major_version }}/teradici-pcoip-agent'
+    gpgcheck: yes
+    gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-teradici
+    enabled: "{{ repo_teradici_pcoip_agent_enabled }}"
+  when: repo_teradici_pcoip_agent

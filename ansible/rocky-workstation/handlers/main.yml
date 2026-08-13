@@ -1,0 +1,21 @@
+---
+
+- name: reload dconf
+  command: dconf update
+
+- name: reload udev
+  command: udevadm control --reload
+
+- name: reload sysctl
+  service:
+    name: systemd-sysctl
+    state: restarted
+
+- name: daemon reload
+  systemd_service:
+    daemon-reload: true
+
+- name: restart sssd
+  service:
+    name: sssd
+    state: restarted

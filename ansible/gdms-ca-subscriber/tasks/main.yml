@@ -1,0 +1,18 @@
+---
+
+# Genericization variables:
+#   org_ca_source_files_path: Path containing organization CA files to install. Set from inventory, group_vars, or --extra-vars.
+
+- name: Grab certificate
+  copy:
+    src: "{{ org_ca_source_files_path }}"
+    dest: /etc/pki/ca-trust/source/anchors/
+    owner: root
+    group: root
+    mode: '0644'
+  register: add_ca
+
+# Need to run this immediately when this is used as a dependency
+- name: Extract Root Keys
+  command: /usr/bin/update-ca-trust extract
+  when: add_ca.changed

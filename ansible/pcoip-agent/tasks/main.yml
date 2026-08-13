@@ -1,0 +1,163 @@
+---
+# Genericization variables:
+#   Provide internal DNS domains, service URLs, hostnames, IPs, tokens, and deployment paths through inventory, group_vars, host_vars, Ansible Vault, or --extra-vars before use.
+- name: Setup PCoIP Agent repository
+  yum_repository:
+    name: teradici-pcoip-agent
+    description: Teradici PCoIP graphics and standard agents
+    file: teradici-pcoip-agent
+    baseurl: "{{ internal_mirror_base_url }}/yum/teradici/7/teradici-pcoip-agent"
+    gpgcheck: yes
+    gpgkey: "{{ internal_mirror_base_url }}/yum/teradici/gpg.4581DD6ACC910D6F.key"
+    enabled: yes
+
+- name: Setup PCoIP Agent (noarch) repository
+  yum_repository:
+    name: teradici-pcoip-agent-noarch
+    description: Teradici PCoIP noarch packages
+    file: teradici-pcoip-agent
+    baseurl: "{{ internal_mirror_base_url }}/yum/teradici/7/teradici-pcoip-agent-noarch"
+    gpgcheck: yes
+    gpgkey: "{{ internal_mirror_base_url }}/yum/teradici/gpg.4581DD6ACC910D6F.key"
+    enabled: yes
+
+- name: Install PCoIP RPMs
+  yum:
+    name:
+      - xorg-x11-drv-teravfb
+      - pcoip-agent-standard
+    state: latest
+
+- name: Remove USB passthrough support
+  yum:
+    name: usb-vhci
+    state: removed
+
+- name: Setup PCoIP agent configuration
+  blockinfile:
+    marker: "# {mark} ANSIBLE MANAGED BLOCK"
+    block: |
+      pcoip.license_server_path = http://{{ pcoip_license_server_hostname }}.{{ internal_dns_domain }}:7070/request
+      pcoip.ssl_cert_type = 1
+      pcoip.ssl_cert_min_key_length = 3072
+      pcoip.enable_usb = 0
+      pcoip.server_clipboard_state = 0
+      pcoip.enable_audio = 0
+      pcoip.enbable_colloboration = 0
+    dest: /etc/pcoip-agent/pcoip-agent.conf
+    create: yes
+  notify: reload pcoip
+
+- name: Open up firewall for PCoIP
+  firewalld:
+    port: "{{ item }}"
+    permanent: yes
+    state: enabled
+  loop:
+    - 443/tcp
+    - 4172/tcp
+    - 4172/udp
+    - 60443/tcp
+
+- name: Set selinux file settings for certificates
+  sefcontext:
+    setype: cert_t
+    target: '/etc/pcoip-agent/ssl-certs(/.*)?'
+    state: present
+
+- name: Make pcoip certs directory
+  file:
+    path: /etc/pcoip-agent/ssl-certs
+    state: directory
+    mode: '0750'
+    owner: pcoip
+    group: pcoip
+
+- name: Restorecon manually
+  command:
+    cmd: restorecon /etc/pcoip-agent/ssl-certs
+  changed_when: false
+
+- name: Request Certificate
+  command:
+    cmd: ipa-getcert request -K pcoip/{{ ansible_fqdn }} --subject-name='CN={{ ansible_fqdn }},O={{ internal_kerberos_realm }}' --keyfile /etc/pcoip-agent/ssl-certs/pcoip-key.pem --certfile /etc/pcoip-agent/ssl-certs/pcoip-cert.pem --key-size=3072 --id=pcoip-cert --renew --key-usage=digitalSignature --key-usage=nonRepudiation --key-usage=keyEncipherment --key-usage=dataEncipherment --key-owner pcoip --key-perms 0400 --cert-owner pcoip --cert-perms 0400 -w
+    creates: /etc/pcoip-agent/ssl-certs/pcoip-cert.pem
+
+- name: Copy ca cert to pcoip cert location
+  copy:
+    src: /etc/ipa/ca.crt
+    dest: /etc/pcoip-agent/ssl-certs/pcoip-cacert.pem
+    owner: pcoip
+    group: pcoip
+    mode: '0400'
+    remote_src: yes
+
+# For some reason the file permisions are not correct for the copy and ipa-getcert key/cert perms
+- name: Fix pcoip file permissions
+  file:
+    path: '/etc/pcoip-agent/ssl-certs/{{ item }}'
+    owner: pcoip
+    group: pcoip
+    mode: '0400'
+  loop:
+    - pcoip-key.pem
+    - pcoip-cert.pem
+    - pcoip-cacert.pem
+
+# Restarting will kill the session, including all of your open running programs. So, maybe leave this as a manual step for now
+# - name: Restart pcoip service
+#   systemd:
+#     name: pcoip
+#     state: restarted
+
+
+- name: Install gnome-screensaver
+  yum:
+    name:
+      - gnome-screensaver
+      - multiwatch
+    state: latest
+
+- name: Configure gsettings for screensaver
+  blockinfile:
+    create: yes
+    path: /etc/dconf/db/local.d/00-screensaver
+    block: |
+      [org/gnome/desktop/session]
+      idle-delay=uint32 900
+      [org/gnome/desktop/screensaver]
+      lock-enabled=true
+      lock-delay=uint32 5
+  notify: reload dconf
+
+- name: Lock down screensaver settings
+  blockinfile:
+    create: yes
+    path: /etc/dconf/db/local.d/locks/screensaver
+    block: |
+      /org/gnome/desktop/session/idle-delay
+      /org/gnome/desktop/screensaver/lock-enabled
+      /org/gnome/desktop/screensaver/lock-delay
+  notify: reload dconf
+
+- name: Make sure screensaver starts at login
+  blockinfile:
+    create: yes
+    path: /etc/xdg/autostart/screensaver.desktop
+    block: |
+      [Desktop Entry]
+      Type=Application
+      Name=Screensaver for Lock Screen
+      Exec=multiwatch /usr/bin/gnome-screensaver
+  notify: reload dconf
+
+- name: Get package facts to see if gnome-classic-session is installed
+  package_facts:
+
+- name: Enable gnome-classic Activities Overview
+  lineinfile:
+    path: /usr/share/gnome-shell/modes/classic.json
+    regexp: '^\s*"hasOverview"'
+    line: '    "hasOverview": true,'
+  when: "'gnome-classic-session' in ansible_facts.packages"
+

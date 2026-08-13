@@ -1,0 +1,1864 @@
+# Genericization variables:
+#   Provide internal DNS domains, service URLs, hostnames, IPs, tokens, and deployment paths through inventory, group_vars, host_vars, Ansible Vault, or --extra-vars before use.
+    "lemhi"
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 14:b3:1f:2c:6c:95
+      model: OptiPlex 3050
+      serial: 7LFW0M2
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 15617
+      cores: 2
+
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 98:b7:85:1e:de:d0
+      model: System Product Name
+      serial: System Serial Number
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 192830
+      cores: 24
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: b8:2a:72:d9:8c:32
+      model: PowerEdge R720
+      serial: 4S67Q22
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 193158
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 98:b7:85:1e:dd:9f
+      model: System Product Name
+      serial: System Serial Number
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 192830
+      cores: 24
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 14:23:f2:42:08:a1
+      model: PowerEdge R740xd
+      serial: G6M36X3
+      os: Rocky
+      osver: 9.3
+      mem_in_mb: 1546257
+      cores: 20
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:ab:f1:3c
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 31819
+      cores: 12
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 98:b7:85:23:a4:80
+      model: System Product Name
+      serial: System Serial Number
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 254873
+      cores: 24
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 98:b7:85:22:61:1a
+      model: System Product Name
+      serial: System Serial Number
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 254873
+      cores: 24
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 98:b7:85:22:61:18
+      model: System Product Name
+      serial: System Serial Number
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 254873
+      cores: 24
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 98:b7:85:22:56:08
+      model: System Product Name
+      serial: System Serial Number
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 254873
+      cores: 24
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 98:b7:85:0f:46:35
+      model: System Product Name
+      serial: System Serial Number
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 128482
+      cores: 24
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:ba:6c:78
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 47897
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 98:b7:85:22:f4:30
+      model: System Product Name
+      serial: System Serial Number
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 254873
+      cores: 24
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:77:64:0b
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 83946
+      cores: 1
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: f8:f2:1e:e0:03:b0
+      model: PowerEdge R340
+      serial: 58RC2G3
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 63762
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: f8:f2:1e:e0:10:91
+      model: PowerEdge R340
+      serial: 58RF2G3
+      os: Rocky
+      osver: 9.3
+      mem_in_mb: 63763
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: f8:f2:1e:df:f1:a1
+      model: PowerEdge R340
+      serial: 11VF2G3
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 63762
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: f8:f2:1e:e0:05:b1
+      model: PowerEdge R340
+      serial: 58RD2G3
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 63762
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: f8:f2:1e:e0:0e:81
+      model: PowerEdge R340
+      serial: 58RG2G3
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 63762
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: f8:f2:1e:df:f5:71
+      model: PowerEdge R340
+      serial: 11VG2G3
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 63762
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 6c:fe:54:0f:3f:b1
+      model: PowerEdge R340
+      serial: H90SMH3
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 63762
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 6c:fe:54:0d:4f:51
+      model: PowerEdge R340
+      serial: H90VMH3
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 63762
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 5c:6f:69:54:7c:11
+      model: PowerEdge R340
+      serial: 9F3R1N3
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 63759
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 5c:6f:69:55:13:01
+      model: PowerEdge R340
+      serial: 1F3R1N3
+      os: Rocky
+      osver: 9.3
+      mem_in_mb: 63763
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 6c:fe:54:0f:41:21
+      model: PowerEdge R340
+      serial: 8SS3KD3
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 63762
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 5c:6f:69:61:4f:31
+      model: PowerEdge R340
+      serial: 8F3R1N3
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 63759
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 5c:6f:69:54:e2:61
+      model: PowerEdge R340
+      serial: CF3R1N3
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 63763
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 5c:6f:69:55:2d:a1
+      model: PowerEdge R340
+      serial: BF3R1N3
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 63759
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 5c:6f:69:55:0b:81
+      model: PowerEdge R340
+      serial: 7F3R1N3
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 63763
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 5c:6f:69:54:e1:51
+      model: PowerEdge R340
+      serial: 5F3R1N3
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 63763
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 14:23:f2:ae:5a:41
+      model: PowerEdge R350
+      serial: BKDHC14
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 63761
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:ea:d6:e0
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.1
+      mem_in_mb: 15733
+      cores: 1
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 5c:6f:69:55:07:11
+      model: PowerEdge R340
+      serial: DF3R1N3
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 63759
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: d4:04:e6:23:e4:d1
+      model: PowerEdge R350
+      serial: 2BG3704
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 31557
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: d4:04:e6:24:8d:31
+      model: PowerEdge R350
+      serial: G9G3704
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 31553
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: d4:04:e6:24:4a:81
+      model: PowerEdge R350
+      serial: J9G3704
+      os: Rocky
+      osver: 9.3
+      mem_in_mb: 31557
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: d4:04:e6:24:6a:91
+      model: PowerEdge R350
+      serial: 4BG3704
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 31557
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 10:98:19:32:03:3e
+      model: Precision 5860 Tower
+      serial: 95YL794
+      os: RedHat
+      osver: 9.6
+      mem_in_mb: 63537
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: b8:ca:3a:b7:2f:1e
+      model: Precision T3600
+      serial: CLNTBY1
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 31762
+      cores: 4
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 14:b3:1f:2b:e0:9b
+      model: OptiPlex 3050
+      serial: 7LGX0M2
+      os: Rocky
+      osver: 9.3
+      mem_in_mb: 7568
+      cores: 2
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 6c:92:cf:85:ff:01
+      model: PowerEdge R360
+      serial: FGG5K74
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 63747
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: d4:04:e6:23:db:c1
+      model: PowerEdge R350
+      serial: 3BG3704
+      os: Rocky
+      osver: 9.3
+      mem_in_mb: 63765
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: b8:ca:3a:93:bb:04
+      model: Precision T3600
+      serial: 9DX0JX1
+      os: Rocky
+      osver: 9.3
+      mem_in_mb: 31792
+      cores: 4
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: b8:2a:72:d9:9a:30
+      model: PowerEdge R720
+      serial: 4T16Q22
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 32066
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: f8:b1:56:a4:0b:e4
+      model: Precision T3600
+      serial: CNGNBZ1
+      os: CentOS
+      osver: 7.9
+      mem_in_mb: 31966
+      cores: 4
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 98:b7:85:1e:df:54
+      model: System Product Name
+      serial: System Serial Number
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 192900
+      cores: 24
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 6c:92:cf:35:5d:c1
+      model: PowerEdge R360
+      serial: DGG5K74
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 64003
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 98:b7:85:1e:df:5c
+      model: System Product Name
+      serial: System Serial Number
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 192388
+      cores: 24
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:3f:19:49
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 115992
+      cores: 10
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:3b:e3:c8
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 7941
+      cores: 1
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:fd:51:16
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 160438
+      cores: 16
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:6a:ed:92
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 160438
+      cores: 16
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:ed:5e:1f
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.3
+      mem_in_mb: 31841
+      cores: 4
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 14:23:f2:ad:d1:21
+      model: PowerEdge R350
+      serial: DKDHC14
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 63761
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: d4:04:e6:24:18:41
+      model: PowerEdge R350
+      serial: DVMHZ24
+      os: Rocky
+      osver: 9.3
+      mem_in_mb: 63765
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 6c:92:cf:35:3f:e1
+      model: PowerEdge R360
+      serial: CGG5K74
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 63743
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:1e:c5:44
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 7541
+      cores: 4
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:3f:9e:8d
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.1
+      mem_in_mb: 15732
+      cores: 1
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:14:87:9b
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.3
+      mem_in_mb: 31840
+      cores: 1
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:3f:9e:7c
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 15737
+      cores: 1
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:da:5e:92
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.3
+      mem_in_mb: 15737
+      cores: 1
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:c2:b8:3e
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.3
+      mem_in_mb: 15737
+      cores: 1
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:ad:c9:18
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 7685
+      cores: 1
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:41:ac:59
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 31841
+      cores: 4
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:35:5a:54
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 15737
+      cores: 1
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:56:2a:26
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 15737
+      cores: 1
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:58:34:5c
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 31839
+      cores: 1
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 1c:69:7a:0d:16:3e
+      model: NUC8i5BEH
+      serial: G6BE948008LL
+      os: Rocky
+      osver: 9.3
+      mem_in_mb: 15605
+      cores: 4
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 70:8b:cd:a5:71:62
+      model: System Product Name
+      serial: System Serial Number
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 15605
+      cores: 4
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:14:c7:5f
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.3
+      mem_in_mb: 31840
+      cores: 1
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:c7:c1:50
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.3
+      mem_in_mb: 15735
+      cores: 1
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:98:10:f0
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 15718
+      cores: 1
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:08:2e:56
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.1
+      mem_in_mb: 15730
+      cores: 1
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:7d:0c:e3
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.1
+      mem_in_mb: 31834
+      cores: 1
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:fa:91:71
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.3
+      mem_in_mb: 15737
+      cores: 1
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 14:b3:1f:2b:7c:4b
+      model: OptiPlex 3050
+      serial: 493L7M2
+      os: Rocky
+      osver: 9.3
+      mem_in_mb: 7569
+      cores: 2
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:47:54:07
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 15736
+      cores: 8
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 7e:3e:49:55:7d:2a
+      model: System Product Name
+      serial: System Serial Number
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 127972
+      cores: 24
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:71:e2:96
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.3
+      mem_in_mb: 31839
+      cores: 12
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:3f:86:13
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 8.6
+      mem_in_mb: 31953
+      cores: 1
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:42:56:d5
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.3
+      mem_in_mb: 31839
+      cores: 1
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 24:4b:fe:78:c7:3b
+      model: System Product Name
+      serial: System Serial Number
+      os: Rocky
+      osver: 9.3
+      mem_in_mb: 31655
+      cores: 8
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:f6:c0:3b
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.3
+      mem_in_mb: 31004
+      cores: 12
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 98:b7:85:1e:df:50
+      model: System Product Name
+      serial: System Serial Number
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 127972
+      cores: 24
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:5a:58:40
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 182634
+      cores: 1
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 14:b3:1f:2b:72:c6
+      model: OptiPlex 3050
+      serial: 48JX0M2
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 15595
+      cores: 2
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:8d:4b:cf
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.3
+      mem_in_mb: 31820
+      cores: 1
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:5d:67:0b
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 31839
+      cores: 12
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:92:ed:17
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 100069
+      cores: 1
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:1d:3a:15
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 47901
+      cores: 2
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:72:a2:2d
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 96027
+      cores: 12
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: d4:04:e6:23:f4:41
+      model: PowerEdge R350
+      serial: CVMHZ24
+      os: Rocky
+      osver: 9.3
+      mem_in_mb: 63765
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:2b:3a:b0
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 91931
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:e1:e8:af
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 91931
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:25:c5:7f
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.3
+      mem_in_mb: 7685
+      cores: 1
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:00:ea:bb
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 7665
+      cores: 1
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:72:e4:89
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 8.10
+      mem_in_mb: 31888
+      cores: 8
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 14:b3:1f:2b:71:df
+      model: OptiPlex 3050
+      serial: 4VBX0M2
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 3543
+      cores: 2
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ elastic_stack_host }}4"
+      mac_addr: 52:54:00:96:29:44
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 249141
+      cores: 20
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 40:a6:b7:b4:69:95
+      model: PowerEdge R350
+      serial: 7ZWQ7V3
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 63765
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:5e:c1:8d
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 3915
+      cores: 1
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ zabbix_agent_listen_ip }}"
+      mac_addr: 52:54:00:74:9c:01
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 9685
+      cores: 4
+
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 34:5a:60:a0:9d:d9
+      model: PRO ADL-N Cubi N (MS-B0A9)
+      serial: MSB0A9P7A0100437
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 3690
+      cores: 4
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 6c:92:cf:35:0b:91
+      model: PowerEdge R360
+      serial: BGG5K74
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 31539
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:5f:bb:44
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 8.6
+      mem_in_mb: 64145
+      cores: 12
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:28:5d:6a
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 1444
+      cores: 1
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:5c:27:2d
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 1444
+      cores: 1
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:77:86:8b
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 1444
+      cores: 1
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:72:67:06
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 1444
+      cores: 1
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:db:d1:fe
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 1444
+      cores: 1
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:3b:b0:cd
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 1444
+      cores: 1
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:18:30:2f
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 1444
+      cores: 1
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:4c:a4:ab
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 1444
+      cores: 1
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 34:5a:60:75:77:31
+      model: PRO ADL-N Cubi N (MS-B0A9)
+      serial: MSB0A9P6A0100901
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 3694
+      cores: 4
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 34:5a:60:75:79:6b
+      model: PRO ADL-N Cubi N (MS-B0A9)
+      serial: MSB0A9P6A0100920
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 3694
+      cores: 4
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:da:cc:34
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 1444
+      cores: 1
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:ac:bb:ae
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 1444
+      cores: 1
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:92:69:0e
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 1444
+      cores: 1
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:8e:f8:fd
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 1444
+      cores: 1
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:54:69:c4
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 1444
+      cores: 1
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 34:5a:60:a0:9d:c9
+      model: PRO ADL-N Cubi N (MS-B0A9)
+      serial: MSB0A9P7A0100454
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 3498
+      cores: 4
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 34:5a:60:bc:84:22
+      model: PRO ADL-N Cubi N (MS-B0A9)
+      serial: MSB0A9P7A0100495
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 3498
+      cores: 4
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 34:5a:60:bc:86:b6
+      model: PRO ADL-N Cubi N (MS-B0A9)
+      serial: MSB0A9P7A0100500
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 3498
+      cores: 4
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 34:5a:60:a0:9c:31
+      model: PRO ADL-N Cubi N (MS-B0A9)
+      serial: MSB0A9P7A0100459
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 3498
+      cores: 4
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 34:5a:60:bc:84:16
+      model: PRO ADL-N Cubi N (MS-B0A9)
+      serial: MSB0A9P7A0100475
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 3498
+      cores: 4
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 34:5a:60:7f:e3:ef
+      model: PRO ADL-N Cubi N (MS-B0A9)
+      serial: MSB0A9P7A0100435
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 3498
+      cores: 4
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 34:5a:60:7f:e2:5b
+      model: PRO ADL-N Cubi N (MS-B0A9)
+      serial: MSB0A9P7A0100489
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 3498
+      cores: 4
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 34:5a:60:a0:9d:bb
+      model: PRO ADL-N Cubi N (MS-B0A9)
+      serial: MSB0A9P7A0100483
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 3498
+      cores: 4
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 34:5a:60:a0:9c:f9
+      model: PRO ADL-N Cubi N (MS-B0A9)
+      serial: MSB0A9P7A0100458
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 3498
+      cores: 4
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 34:5a:60:bc:85:02
+      model: PRO ADL-N Cubi N (MS-B0A9)
+      serial: MSB0A9P7A0100424
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 3498
+      cores: 4
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 34:5a:60:a0:9b:fd
+      model: PRO ADL-N Cubi N (MS-B0A9)
+      serial: MSB0A9P7A0100464
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 3498
+      cores: 4
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 34:5a:60:bc:84:3c
+      model: PRO ADL-N Cubi N (MS-B0A9)
+      serial: MSB0A9P7A0100494
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 3498
+      cores: 4
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 34:5a:60:a0:9c:17
+      model: PRO ADL-N Cubi N (MS-B0A9)
+      serial: MSB0A9P7A0100453
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 3498
+      cores: 4
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 34:5a:60:a0:9d:47
+      model: PRO ADL-N Cubi N (MS-B0A9)
+      serial: MSB0A9P7A0100485
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 3498
+      cores: 4
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 34:5a:60:a0:9b:f7
+      model: PRO ADL-N Cubi N (MS-B0A9)
+      serial: MSB0A9P7A0100446
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 3498
+      cores: 4
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 34:5a:60:7f:e1:e5
+      model: PRO ADL-N Cubi N (MS-B0A9)
+      serial: MSB0A9P7A0100484
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 3498
+      cores: 4
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:53:8c:24
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 31819
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:28:ea:8d
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 15735
+      cores: 1
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 6c:92:cf:9e:fe:a1
+      model: PowerEdge R360
+      serial: 8D4S794
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 63747
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 6c:92:cf:9f:15:61
+      model: PowerEdge R360
+      serial: 7D4S794
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 63747
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 6c:92:cf:9e:fe:91
+      model: PowerEdge R360
+      serial: 5D4S794
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 63747
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 6c:92:cf:9e:f7:31
+      model: PowerEdge R360
+      serial: 9D4S794
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 63747
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 6c:92:cf:9f:1b:80
+      model: PowerEdge R360
+      serial: 6D4S794
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 63747
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:a5:2d:52
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 115992
+      cores: 10
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:04:b2:d3
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 15717
+      cores: 2
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:d5:66:90
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 115996
+      cores: 10
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 98:b7:85:22:56:34
+      model: System Product Name
+      serial: System Serial Number
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 254873
+      cores: 24
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:4f:05:f7
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 115992
+      cores: 10
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 6c:fe:54:0d:a8:61
+      model: PowerEdge R340
+      serial: H90TMH3
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 64018
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 14:23:f2:ae:22:91
+      model: PowerEdge R350
+      serial: CKDHC14
+      os: Rocky
+      osver: 9.3
+      mem_in_mb: 63765
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: cc:48:3a:16:3f:f2
+      model: PowerEdge R340
+      serial: 2F3R1N3
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 63763
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: c4:5a:b1:b5:72:fc
+      model: PowerEdge R350
+      serial: 1BG3704
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 63761
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: cc:48:3a:16:40:ea
+      model: PowerEdge R340
+      serial: 6F3R1N3
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 63759
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: c4:5a:b1:b3:de:c8
+      model: PowerEdge R350
+      serial: H9G3704
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 63761
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: c4:5a:b1:a4:9a:dd
+      model: PowerEdge R350
+      serial: 5BG3704
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 63765
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 14:23:f2:ad:ba:a1
+      model: PowerEdge R350
+      serial: 8KDHC14
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 63765
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 14:23:f2:ae:19:71
+      model: PowerEdge R350
+      serial: 9KDHC14
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 63765
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 90:b1:1c:7a:23:32
+      model: Precision T3600
+      serial: J592PW1
+      os: Rocky
+      osver: 9.3
+      mem_in_mb: 31792
+      cores: 4
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: c4:5a:b1:c7:4e:1b
+      model: PowerEdge R350
+      serial: 9VMHZ24
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 63761
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: c4:5a:b1:c7:4e:7b
+      model: PowerEdge R350
+      serial: FVMHZ24
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 31553
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: c0:47:0e:de:bf:21
+      model: PowerEdge R360
+      serial: 8GG5K74
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 63747
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: c0:47:0e:de:b5:09
+      model: PowerEdge R360
+      serial: 9GG5K74
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 63747
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: b4:e9:b8:50:31:98
+      model: PowerEdge R360
+      serial: 3G0JND4
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 63743
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: b4:e9:b8:50:34:30
+      model: PowerEdge R360
+      serial: 4G0JND4
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 63743
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: b4:e9:b8:50:34:38
+      model: PowerEdge R360
+      serial: 6G0JND4
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 63743
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: b4:e9:b8:50:38:78
+      model: PowerEdge R360
+      serial: 5G0JND4
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 63743
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: b4:e9:b8:50:26:e8
+      model: PowerEdge R360
+      serial: 2G0JND4
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 63743
+      cores: 6
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 14:b3:1f:2b:b7:76
+      model: OptiPlex 3050
+      serial: 4V4Y0M2
+      os: Rocky
+      osver: 9.3
+      mem_in_mb: 7569
+      cores: 2
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 64:00:6a:88:52:28
+      model: OptiPlex 3040
+      serial: 2DQNBB2
+      os: Rocky
+      osver: 9.3
+      mem_in_mb: 7586
+      cores: 4
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: d4:5d:64:af:d9:a0
+      model: System Product Name
+      serial: System Serial Number
+      os: Rocky
+      osver: 9.3
+      mem_in_mb: 31665
+      cores: 8
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:6f:d9:69
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 15969
+      cores: 1
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 6c:fe:54:35:6c:81
+      model: PowerEdge R530
+      serial: 3G7VKB2
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 193192
+      cores: 8
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 40:a6:b7:b4:69:a5
+      model: PowerEdge R350
+      serial: 8ZWQ7V3
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 64053
+      cores: 6
+
+      hostname: "{{ internal_ipa_hostname }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:c9:7d:07
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 3896
+      cores: 1
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:26:03:05
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 15432
+      cores: 1
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:f3:96:f1
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 7662
+      cores: 1
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:b3:77:d8
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 3636
+      cores: 1
+
+      hostname: "{{ pcoip_license_server_hostname }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:66:10:2a
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 8.10
+      mem_in_mb: 3921
+      cores: 1
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:19:4a:11
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 15713
+      cores: 1
+
+      hostname: "{{ license_server_hostname }}"
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:56:59:f6
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 3896
+      cores: 1
+
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:ed:70:37
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 7922
+      cores: 1
+
+      hostname: "{{ license_server_secondary_hostname }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:c5:dd:ad
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.4
+      mem_in_mb: 7922
+      cores: 1
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:ac:8c:e4
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.2
+      mem_in_mb: 3906
+      cores: 1
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:6a:51:a6
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 126648
+      cores: 8
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:fc:9a:0f
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 15713
+      cores: 1
+
+      hostname: "{{ inventory_hostname_map[inventory_hostname] | default(inventory_hostname) }}"
+      ip_addr: "{{ inventory_ip_map[inventory_hostname] | default(omit) }}"
+      mac_addr: 52:54:00:44:54:a4
+      model: KVM
+      serial: NA
+      os: Rocky
+      osver: 9.6
+      mem_in_mb: 64278
+      cores: 4
+

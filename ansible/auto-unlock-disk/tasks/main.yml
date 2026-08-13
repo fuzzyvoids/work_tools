@@ -1,0 +1,71 @@
+---
+
+# Genericization variables:
+#   primary_site_network: CIDR network identifier for primary-site systems, for example 192.0.2.0.
+#   secondary_site_network: CIDR network identifier for secondary-site systems, for example 198.51.100.0.
+#   luks_password: Existing LUKS passphrase. Use Ansible Vault or --extra-vars.
+#   tang_url: Optional Tang URL override when a single explicit Tang endpoint is needed.
+
+# Auto-unlock LUKs disks at boot time by using Tang and Clevis
+
+- name: Keep original ansible facts because we are about to override them
+  set_fact:
+    original_ansible_facts: "{{ ansible_facts }}"
+
+# According to the documents, this is NOT supposed to update the variable in
+# place. However, it seems to do exactly that. We will still use set_fact with
+# the registered variable in case this undocumented behaviour changes, but the
+# set fact will is skipped because the distribution has already changed.
+- name: Update ansible_host to RHEL.
+  ansible.utils.update_fact:
+    updates:
+      - path: ansible_facts.distribution
+        value: RedHat
+  register: updated_facts
+  when: ansible_facts.distribution == "Rocky"
+  changed_when: false
+
+- name: Override ansible_facts
+  set_fact:
+    ansible_facts: "{{ updated_facts.ansible_facts }}"
+  changed_when: false
+  when: ansible_facts.distribution == "Rocky"
+
+- name: Get LUKS container
+  shell:
+    cmd: blkid -t TYPE=crypto_LUKS | awk -F ':' '{print $1}'
+  register: luks_info
+
+- name: Setup network bound disk encryption.
+  include_role:
+    name: redhat.rhel_system_roles.nbde_client
+  vars:
+    nbde_client_bindings:
+      - device: "{{ luks_info.stdout | default(auto_unlock_disk_default_luks_device) }}"
+        encryption_password: "{{ luks_password | default(auto_unlock_disk_default_luks_password) }}"
+        servers:
+          - "{{ tang_url | default(auto_unlock_disk_default_tang_url) }}"
+          - "{{ tang_url | default(auto_unlock_disk_failover_tang_url) }}"
+          - "{{ tang_url | default(auto_unlock_disk_failover_tang_url1) }}"
+  when: 
+    - ansible_default_ipv4['network'] == primary_site_network or inventory_hostname in core_servers
+    - luks_info.stdout | length > 0
+
+- name: Setup network bound disk encryption.
+  include_role:
+    name: redhat.rhel_system_roles.nbde_client
+  vars:
+    nbde_client_bindings:
+      - device: "{{ luks_info.stdout | default(auto_unlock_disk_default_luks_device) }}"
+        encryption_password: "{{ luks_password | default(auto_unlock_disk_default_luks_password) }}"
+        servers:
+          - "{{ tang_url | default(auto_unlock_disk_failover_tang_url1) }}"
+          - "{{ tang_url | default(auto_unlock_disk_default_tang_url) }}"
+          - "{{ tang_url | default(auto_unlock_disk_failover_tang_url) }}"
+  when: 
+    - ansible_default_ipv4['network'] == secondary_site_network and inventory_hostname not in core_servers
+    - luks_info.stdout | length > 0
+
+- name: Restore facts
+  set_fact:
+    ansible_facts: "{{ original_ansible_facts }}"

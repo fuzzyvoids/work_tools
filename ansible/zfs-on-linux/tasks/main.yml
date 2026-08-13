@@ -1,0 +1,37 @@
+---
+# Genericization variables:
+#   Provide internal DNS domains, service URLs, hostnames, IPs, tokens, and deployment paths through inventory, group_vars, host_vars, Ansible Vault, or --extra-vars before use.
+# Should work for RHEL style OS's as long as we are hosting the packages for
+# that distribution major version.
+
+- name: Copy ZFS GPG Key
+  copy:
+    src: RPM-GPG-KEY-openzfs
+    dest: /etc/pki/rpm-gpg/
+
+- name: Add ZFS Repo
+  yum_repository:
+    name: zfs
+    description: ZFS On Linux
+    baseurl: "{{ internal_mirror_base_url }}/zfs/epel/{{ ansible_distribution_major_version }}/x86_64/"
+    gpgcheck: yes
+    gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-openzfs
+    enabled: yes
+
+- name: Ensure that epel is installed
+  yum:
+    name: epel-release
+    state: present
+
+- name: Install zfs
+  yum:
+    name: zfs
+    state: present
+
+- name: Always load zfs kernel module
+  lineinfile:
+    dest: /etc/modules-load.d/zfs.conf
+    line: zfs
+    state: present
+    create: yes
+

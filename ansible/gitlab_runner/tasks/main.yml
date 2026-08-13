@@ -1,0 +1,135 @@
+---
+# Genericization variables:
+#   Provide internal DNS domains, service URLs, hostnames, IPs, tokens, and deployment paths through inventory, group_vars, host_vars, Ansible Vault, or --extra-vars before use.
+# References:
+# * redhat.com/en/blog/manage-container-registries
+# * https://docs.gitlab.com/runner/install/docker
+# * https://docs.gitlab.com/runner/executors/docker/#use-podman-to-run-docker-commands
+
+- name: Check to see if the gitlab runner config file exists.
+  ansible.builtin.stat:
+    path: "{{ glr_config_volume_path }}/config.toml"
+  register: gitlab_config_file
+
+- name: Fail fast if token is required.
+  ansible.builtin.assert:
+    fail_msg: A GitLab authentication token must be set in glr_auth_token for new installations.
+    that: "gitlab_config_file.stat.exists or glr_auth_token is defined"
+    quiet: true
+
+- name: Enable linger on {{ glr_runner_user }} user to allow runner to continue to execute while the user is not logged in.
+  ansible.builtin.command:
+    cmd: loginctl enable-linger {{ glr_runner_user }}
+    creates: /var/lib/systemd/linger/{{ glr_runner_user }}
+
+- name: Ensure that the {{ glr_runner_user }} user home dir is created and get user id.
+  ansible.builtin.user:
+    name: "{{ glr_runner_user }}"
+    create_home: true
+    state: present
+  register: glr_runner_user_info
+
+- name: Steps to run as {{ glr_runner_user }}.
+  become: true
+  become_user: "{{ glr_runner_user }}"
+  block:
+
+    - name: Convenience for when you su to {{ glr_runner_user }} and want to use systemctl commands.
+      ansible.builtin.blockinfile:
+        marker: "# {mark} ANSIBLE MANAGED BLOCK for it/it gitlab_runner role"
+        path: /home/{{ glr_runner_user }}/.bashrc
+        block: "export XDG_RUNTIME_DIR=/run/user/$UID"
+
+    - name: Start podman socket.
+      ansible.builtin.systemd_service:
+        daemon_reload: true
+        enabled: true
+        name: podman.socket
+        scope: user
+        state: started
+
+    - name: Create runner certs directory.
+      ansible.builtin.file:
+        path: "{{ glr_config_volume_path }}/certs"
+        mode: "0770"
+        state: directory
+    
+    - name: Copy CA certificate.
+      ansible.builtin.copy:
+        src: /etc/ipa/ca.crt
+        dest: "{{ glr_config_volume_path }}/certs/ca.crt"
+        remote_src: true
+        mode: "0440"
+
+    - name: Register the gitlab runner.
+      when: not gitlab_config_file.stat.exists
+      containers.podman.podman_container:
+        name: gitlab-runner
+        image: docker.io/gitlab/gitlab-runner
+        privileged: true
+        user: root
+        volume:
+          - "{{ glr_config_volume_path }}/:/etc/gitlab-runner/:Z"
+          - "/var/run/user/{{ glr_runner_user_info.uid }}/podman/podman.sock:/var/run/docker.sock:Z"
+        state: started
+        rm: true
+        command: >
+          register
+          --non-interactive
+          --url {{ glr_gitlab_instance_url }}
+          --token {{ glr_auth_token }}
+          --executor docker
+          --docker-image alpine:latest
+          --docker-pull-policy always
+          --docker-pull-policy if-not-present
+      # The feature flag FF_NETWORK_PER_BUILD was removed because it caused an
+      # issue with DNS. It had initially worked, but then after several months
+      # of working correctly, it stopped working. No further time was spent to
+      # diagnose the root cause. `--feature-flags FF_NETWORK_PER_BUILD`
+      # GitLab link at start of document now has a note that `aardvark-dns`
+      # version 1.10.0 and earlier "cause sporadic DNS resolution failures in
+      # CI/CD jobs". Newer versions have the issue resolved. See
+      # https://github.com/containers/aardvark-dns/issues/389
+
+    - name: Enable multiple concurrent jobs.
+      ansible.builtin.lineinfile:
+        path: "{{ glr_config_volume_path }}/config.toml"
+        regexp: '^concurrent\s+='
+        line: "concurrent = {{ glr_concurrent_value }}"
+
+    - name: Install quadlet for the gitlab-runner
+      containers.podman.podman_container:
+        name: gitlab-runner
+        image: docker.io/gitlab/gitlab-runner
+        command: run
+        privileged: true
+        volume:
+          - "{{ glr_config_volume_path }}/:/etc/gitlab-runner/:Z"
+          - "/var/run/user/{{ glr_runner_user_info.uid }}/podman/podman.sock:/var/run/docker.sock:Z"
+          - "/etc/containers/registries.conf:/etc/containers/registries.conf:ro"
+        state: quadlet
+          ## restart_policy does not work as of
+          ## ansible-collection-containers-podman 1.16.3-7.el9. See
+          ## https://github.com/containers/ansible-podman-collections/issues/913
+          ## Instead, use quadlet_options to add [Service] Restart option
+          #restart_policy: always
+        quadlet_options:
+          - |
+            [Service]
+            Restart=always
+          - |
+            [Unit]
+            Description=GitLab Runner in Docker container.
+            After=podman.socket network-online.service
+          - |
+            [Install]
+            WantedBy=multi-user.target default.target
+
+
+    - name: Enable and start the gitlab-runner.
+      ansible.builtin.systemd_service:
+        daemon_reload: true
+        enabled: true
+        name: gitlab-runner
+        scope: user
+        state: started

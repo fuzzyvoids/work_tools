@@ -1,0 +1,9 @@
+---
+
+- name: reload dconf
+  command: dconf update
+
+- name: restart pcoip
+  systemd:
+    name: pcoip
+    state: restarted

@@ -1,0 +1,4 @@
+---
+- hosts: deer lynx ocelot quail
+  roles:
+    - podman_common 

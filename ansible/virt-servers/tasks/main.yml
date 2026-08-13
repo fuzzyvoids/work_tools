@@ -1,0 +1,114 @@
+---
+# Genericization variables:
+#   Provide internal DNS domains, service URLs, hostnames, IPs, tokens, and deployment paths through inventory, group_vars, host_vars, Ansible Vault, or --extra-vars before use.
+# https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/configuring_and_managing_virtualization/index
+
+- name: Install packages
+  yum:
+    name: 
+      - qemu-kvm
+      - libvirt
+      - virt-install
+      - tuned
+      - cockpit
+      - fapolicyd
+    state: present
+  notify: 
+    - start tuned
+    - switch profile
+
+- name: Start services
+  systemd:
+    name: "{{ item }}"
+    state: started
+  loop:
+    - virtqemud.socket
+    - virtqemud-ro.socket
+    - virtqemud-admin.socket
+    - virtnetworkd.socket
+    - virtnetworkd-ro.socket
+    - virtnetworkd-admin.socket
+    - virtnodedevd.socket
+    - virtnodedevd-ro.socket
+    - virtnodedevd-admin.socket
+    - virtnwfilterd.socket
+    - virtnwfilterd-ro.socket
+    - virtnwfilterd-admin.socket
+    - virtsecretd.socket
+    - virtsecretd-ro.socket
+    - virtsecretd-admin.socket
+    - virtstoraged.socket
+    - virtstoraged-ro.socket
+    - virtstoraged-admin.socket
+    - virtinterfaced.socket
+    - virtinterfaced-ro.socket
+    - virtinterfaced-admin.socket
+
+- name: Enable cockpit socket
+  systemd:
+    enabled: yes
+    state: started
+    name: cockpit.socket
+  when: ansible_facts['distribution'] == "Rocky"
+  tags:
+    - cockpit
+
+- name: Remove the message about enabling cockpit
+  file:
+    path: /etc/motd.d/cockpit
+    state: absent
+  when: ansible_facts['distribution'] == "Rocky"
+  tags:
+    - cockpit
+
+- name: Install cockpit packages 
+  yum:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+#     - cockpit-pcp
+      - cockpit-machines
+      - cockpit-file-sharing
+  when: ansible_facts['distribution'] == "Rocky"
+  tags:
+    - cockpit
+
+- name: Check for xilinx rules
+  stat:
+    path: /etc/fapolicyd/rules.d/39-xilinx.rules
+  register: xilinx_rule_stat
+  tags:
+    - tools_fapolicy
+
+- name: Remove xilinx rule as we are replacing with tools rule
+  file:
+    path: /etc/fapolicyd/rules.d/39-xilinx.rules
+    state: absent
+  when: xilinx_rule_stat.stat.exists
+  tags:
+    - tools_fapolicy
+
+- name: Copy tools rules to host
+  copy:
+    src: 39-tools.rules
+    dest: /etc/fapolicyd/rules.d
+    owner: root
+    group: fapolicyd
+    mode: '0644'
+  notify:
+    - restart fapolicyd
+  tags:
+    - tools_fapolicy
+
+- name: Copy the nfs rule
+  copy:
+    src: 20-nfsd.rules
+    dest: /etc/fapolicyd/rules.d
+    owner: root
+    group: fapolicyd
+    mode: '0644'
+  notify:
+    - restart fapolicyd
+  tags:
+    - tools_fapolicy

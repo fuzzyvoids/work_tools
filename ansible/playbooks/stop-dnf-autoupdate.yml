@@ -1,0 +1,16 @@
+---
+- hosts:
+  - physical_servers
+  - virtual_hosts
+  tasks: 
+  - name: Stop dnf auto timer
+    shell: systemctl stop dnf-automatic.timer
+    ignore_errors: true
+
+  - name: Disable dnf auto timer
+    shell: systemctl disable dnf-automatic.timer 
+    ignore_errors: true
+
+  - name: Mask systemd service
+    shell: systemctl mask dnf-automatic.timer 
+    ignore_errors: true

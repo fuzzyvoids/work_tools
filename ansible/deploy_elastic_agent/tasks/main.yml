@@ -1,0 +1,82 @@
+---
+# Genericization variables:
+#   Provide internal DNS domains, service URLs, hostnames, IPs, tokens, and deployment paths through inventory, group_vars, host_vars, Ansible Vault, or --extra-vars before use.
+# tasks file for deploy_elastic_agent
+
+- name: Collect services running
+  service_facts:
+
+- name: Update fapolicyd if running so we can install and run the elastic agent
+  when: 
+    - ansible_facts.services["fapolicy.d.service"] is defined
+    - ansible_facts.services['fapolicyd.service'].state == 'running'
+    - ansible_facts.services['fapolicyd.service'].status == 'enabled'
+  block:
+  - name: Let us execute out of home directory
+    blockinfile:
+      path: /etc/fapolicyd/rules.d/42-trusted-elf.rules
+      insertbefore: '^# Allow trusted programs to execute'
+      marker: "# {mark} ANSIBLE MANAGED BLOCK"
+      block: |
+        allow perm=execute all : dir=/home/
+
+  - name: Allow dynamic scripts to execute
+    lineinfile:
+      path: /etc/fapolicyd/rules.d/70-trusted-lang.rules
+      regexp: '^deny_audit perm=any all : ftype=%languages'
+      line: 'allow_audit perm=any all : ftype=%languages'
+
+  - name: Restart fapolicyd
+    systemd_service:
+      daemon_reload: true
+      name: fapolicyd.service
+      state: restarted
+
+- name: Elastic agent deployment
+  when:
+    - ansible_system == 'Linux'
+    - ansible_facts.services["elastic-agent.service"] is not defined
+  block:
+  - name: Create temp directory for Elastic Agent installation
+    ansible.builtin.file:
+      name: "{{ el_tmp_path }}"
+      state: directory
+      mode: '0755'
+
+  - name: Copy elastic-agent install file to host
+    copy:
+      src: "{{ el_agent }}"
+      dest: "{{ el_tmp_path }}"
+      mode: '0755'
+
+  - name: Run elastic agent installer when it isn't present
+    ansible.builtin.command:
+      cmd: '{{ el_tmp_path }}/{{ el_agent }} --token={{ enrollment_token }}'
+    register: elastic_install_result
+
+  - name: Cleanup installer
+    ansible.builtin.file:
+      path: "{{ el_tmp_path }}"
+      state: absent
+    when: elastic_install_result.rc == 0
+
+
+- name: Elastic stuff to trust db when the fapolicyd is running
+  when: 
+    - ansible_facts.services["fapolicy.d.service"] is defined
+    - ansible_facts.services['fapolicyd.service'].state == 'running'
+    - ansible_facts.services['fapolicyd.service'].status == 'enabled'
+  block:
+    - name: Add the elastic agent as trusted when fapolicyd is running
+      command: fapolicyd-cli --file add /opt/Elastic/Agent --trust-file elastic-agent
+      ignore_errors: true
+
+    - name: Add the elastic agent as trusted when fapolicyd is running
+      command: fapolicyd-cli --file add /opt/Elastic/SO --trust-file elastic-SO
+      ignore_errors: true
+
+    - name: Restart fapolicyd
+      systemd_service:
+        daemon_reload: true
+        name: fapolicyd.service
+        state: restarted

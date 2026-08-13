@@ -1,0 +1,65 @@
+---
+# Genericization variables:
+#   Provide internal DNS domains, service URLs, hostnames, IPs, tokens, and deployment paths through inventory, group_vars, host_vars, Ansible Vault, or --extra-vars before use.
+- name: Install podman tools.
+  yum:
+    name:
+      - podman
+      - container-tools
+    state: present
+    update_cache: yes
+
+- name: Set max_user_namespaces.
+  sysctl:
+    name: user.max_user_namespaces
+    value: "65536"
+    state: present
+
+- name: Make tmp directory for docker because /var/tmp is too small.
+  file:
+    path: "{{ pc_container_tmp_path }}"
+    mode: "1777"
+    owner: root
+    group: root
+    state: directory
+
+- name: "Set podman temporary directory to {{ pc_container_tmp_path }}"
+  blockinfile:
+    path: /etc/containers/containers.conf
+    marker: "# {mark} ANSIBLE MANAGED BLOCK - Set podman temporary directory"
+    mode: "0644"
+    create: yes
+    block: |
+      [engine]
+      
+      #env = ["TMPDIR=/home/tmp"]
+      # Use more specific implementation of the env line above, but keep above as a reference in case this breaks
+      image_copy_tmp_dir = "{{ pc_container_tmp_path }}"
+
+- name: Add gitlab registry to the list of unqualified search registries.
+  lineinfile:
+    path: "/etc/containers/registries.conf"
+    regexp: '^unqualified-search-registries\s*='
+    line: "unqualified-search-registries = {{ pc_unqualified_search_registries | tojson() }}"
+
+- name: Add registry aliasing for external registries.
+  blockinfile:
+    path: /etc/containers/registries.conf
+    insertafter: unqualified-search-registries
+    marker: "# {mark} ANSIBLE MANAGED BLOCK - Add registry aliasing"
+    block: |
+      {% for registry_redirect in (pc_registry_redirects + pc_extra_registry_redirects) %}
+      [[registry]]
+      location= "{{ registry_redirect.registry }}"
+
+      [[registry.mirror]]
+      location= "{{ registry_redirect.redirect }}"
+
+      {% endfor %}
+
+- name: Configure authselect for using IPA to get subids
+  command: authselect enable-feature with-subid
+
+- name: Save authselect settings changes
+  command: authselect apply-changes
+

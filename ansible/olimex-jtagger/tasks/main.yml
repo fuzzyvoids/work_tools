@@ -1,0 +1,32 @@
+---
+
+# openocd yum package includes the rules file `99-openocd.rules`.
+#
+# Using "A0-" gives it higher precidence.
+#
+# We could also name this file `99-openocd.rules` and it would effectively
+# replace the rules file for openocd, but then we would miss out on the other
+# rules.
+#
+# We also could have just added users to the `plugdev` group and that would
+# have worked but would require users to install openocd...
+- name: Create udev rules for Olimex JTAG
+  blockinfile:
+    block: |
+      ACTION!="add|change", GOTO="olimex_override_end"
+      SUBSYSTEM!="usb|tty|hidraw", GOTO="olimex_override_end"
+      
+      # Please keep this list sorted by VID:PID
+      
+      # Olimex ARM-USB-OCD-TINY-H
+      ATTRS{idVendor}=="15ba", ATTRS{idProduct}=="002a", MODE="664", GROUP="dialout"
+      
+      # Olimex ARM-USB-OCD-H
+      ATTRS{idVendor}=="15ba", ATTRS{idProduct}=="002b", MODE="660", GROUP="dialout"
+
+      LABEL="olimex_override_end"
+    dest: /etc/udev/rules.d/A0-olimex-arm-usb-tiny-h.rules
+    mode: '0644'
+    create: yes
+  notify: reload udev
+

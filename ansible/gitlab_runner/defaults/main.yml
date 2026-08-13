@@ -1,0 +1,34 @@
+---
+# Genericization variables:
+#   Provide internal DNS domains, service URLs, hostnames, IPs, tokens, and deployment paths through inventory, group_vars, host_vars, Ansible Vault, or --extra-vars before use.
+# GitLab Runner Variables
+# These variables use the namespace `glr_` for GitLab Runner.
+
+# The user account to use for running the GitLab runner container. Recommended
+# to use the default `gitlab-runner` group but this may be overridden if
+# needed.
+glr_runner_user: test_gitlab-runner
+
+
+# This is the path that gets passed into the GitLab runner container for
+# storing configuration and other data. It must be accessible by the
+# glr_runner_user account.
+glr_config_volume_path: "/home/{{ glr_runner_user}}/gitlab-runner-config"
+
+
+# A GitLab runner authentication token is required to register new runners.
+# This must be set if this is a new runner. It may be omitted if the runner has
+# already been registered and a config.toml exists for the runner. It's
+# recommended to supply this on the command line instead of actually setting it
+# in the playbook. You can do this by adding the following argument to your
+# ansible-playbook command: `--extra-vars glr_auth_token=<auth-token>`
+# glr_auth_token:
+
+
+# Set the number of jobs that this docker executor will run at once.
+glr_concurrent_value: 100
+
+
+# The GitLab instance to register the runner with.
+glr_gitlab_instance_url: "https://{{ internal_gitlab_hostname }}.{{ internal_dns_domain }}"
+

@@ -1,0 +1,24 @@
+---
+# Genericization variables:
+#   Provide internal DNS domains, service URLs, hostnames, IPs, tokens, and deployment paths through inventory, group_vars, host_vars, Ansible Vault, or --extra-vars before use.
+- name: Install license server
+  yum: 
+    state: present
+    name: "{{ pcoip_license_server_hostname }}"
+
+- name: Open up firewall for PCoIP
+  firewalld:
+    port: "7070/tcp"
+    permanent: yes
+    state: enabled
+
+- name: Reload firewall rules
+  service:
+    name: firewalld
+    state: reloaded
+
+- name: Enable postfix 
+  service:
+    name: postfix
+    state: reloaded
+    enabled: yes

@@ -1,0 +1,81 @@
+---
+# Genericization variables:
+#   Provide internal DNS domains, service URLs, hostnames, IPs, tokens, and deployment paths through inventory, group_vars, host_vars, Ansible Vault, or --extra-vars before use.
+- name: Setup Hosted RHEL 8 BaseOS Repo
+  yum_repository:
+    name: BaseOS
+    description: Red Hat Enterprise Linux 8 - Base OS
+    file: hosted-repos
+    mode: "0644"
+   # baseurl: {{ legacy_repo_base_url }}/yum/rhel-8-for-x86_64-baseos-rpms/
+    baseurl: "{{ internal_mirror_http_base_url }}/rhel/$releasever/rhel-8-for-x86_64-baseos-rpms/"
+    gpgcheck: yes
+    gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+    enabled: yes
+
+- name: Setup Hosted RHEL 8 AppStream Repo
+  yum_repository:
+    name: AppStream
+    description: Red Hat Enterprise Linux 8 - AppStream
+    file: hosted-repos
+    mode: "0644"
+    #baseurl: {{ legacy_repo_base_url }}/yum/rhel-8-for-x86_64-appstream-rpms/
+    baseurl: "{{ internal_mirror_http_base_url }}/rhel/$releasever/rhel-8-for-x86_64-appstream-rpms/"
+    gpgcheck: yes
+    gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+    enabled: yes
+
+- name: Setup Hosted RHEL 8 Ansible Repo
+  yum_repository:
+    name: ansible
+    description: Red Hat Enterprise Linux 8 - Ansible
+    file: hosted-repos
+    mode: "0644"
+    #baseurl: {{ legacy_repo_base_url }}/yum/ansible-2-for-rhel-8-x86_64-rpms/
+    baseurl: "{{ internal_mirror_http_base_url }}/rhel/$releasever/ansible-2.9-for-rhel-8-x86_64-rpms/"
+    gpgcheck: yes
+    gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+    enabled: yes
+
+- name: Setup Hosted RHEL 8 CodeReady Builder Repo
+  yum_repository:
+    name: CodeReady
+    description: Red Hat Enterprise Linux 8 - CodeReady Builder
+    file: hosted-repos
+    mode: "0644"
+    #baseurl: {{ legacy_repo_base_url }}/yum/codeready-builder-for-rhel-8-x86_64-rpms/
+    baseurl: "{{ internal_mirror_http_base_url }}/rhel/$releasever/codeready-builder-for-rhel-8-x86_64-rpms/"
+    gpgcheck: yes
+    gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+    enabled: yes
+
+- name: check for epel.repo
+  stat:
+    path: /etc/yum.repos.d/epel.repo
+  register: epel_repo
+
+- name: Install epel when epel.repo missing
+  yum:
+    name: epel-release
+    state: present
+  when: not epel_repo.stat.exists
+    
+- name: Set epel baseurl to our url
+  replace:
+    path: /etc/yum.repos.d/epel.repo
+    regexp: '#?baseurl=https://download\.example/pub/(.*$)'
+    replace: 'baseurl={{ internal_mirror_base_url }}/\1'
+
+- name: Fix epel repo pointed to mirror-server
+  replace: 
+    path: /etc/yum.repos.d/epel.repo
+    regexp: 'mirror-server'
+    replace: '{{ internal_mirror_hostname }}'
+  tags:
+    - repo-files
+
+- name: epel - Comment out the metalink
+  replace:
+    path: /etc/yum.repos.d/epel.repo
+    regexp: '#?metalink=(.*)'
+    replace: '#metalink=\1'

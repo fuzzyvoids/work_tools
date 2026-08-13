@@ -1,0 +1,12 @@
+---
+- hosts: obrien
+  vars: 
+    luks_device: /dev/nvme0n1p3
+  roles:
+    - rocky-9-repos
+    - auto-unlock-disk
+#   - zfs-on-linux
+    - rocky-9-minimal-plus
+    - nfs-server
+    - virt-servers
+    - deploy_elastic_agent

@@ -1,0 +1,5 @@
+---
+dependencies:
+  - role: repo-teradici
+    vars:
+      repo_teradici_license_server: yes

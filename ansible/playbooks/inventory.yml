@@ -1,0 +1,58 @@
+---
+# Template inventory for this Ansible tool collection.
+#
+# Replace the placeholder hostnames, IP addresses, and group names with values
+# from the target environment before running playbooks. Keep real inventories
+# outside the generic repository when they contain private hostnames, IP ranges,
+# site names, or service roles.
+
+all:
+  vars:
+    ansible_user: example_admin_user
+    internal_dns_domain: example.internal
+    internal_mirror_base_url: https://mirror.example.internal
+    internal_mirror_hostname: mirror
+
+  hosts:
+    example-host-01:
+      ansible_host: 192.0.2.10
+    example-host-02:
+      ansible_host: 192.0.2.11
+
+  children:
+    workstations:
+      hosts:
+        example-host-01:
+
+    servers:
+      hosts:
+        example-host-02:
+
+    physical_servers:
+      hosts: {}
+
+    core_virtual_hosts:
+      hosts: {}
+
+    core_services_servers:
+      hosts: {}
+
+    data_servers:
+      hosts: {}
+
+    virtualization_hosts:
+      hosts: {}
+
+    podman_hosts:
+      hosts: {}
+
+    pcoip_hosts:
+      hosts: {}
+
+    rocky_hosts:
+      hosts:
+        example-host-01:
+        example-host-02:
+
+    rhel_hosts:
+      hosts: {}

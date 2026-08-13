@@ -1,0 +1,236 @@
+---
+# Genericization variables:
+#   Provide internal DNS domains, service URLs, hostnames, IPs, tokens, and deployment paths through inventory, group_vars, host_vars, Ansible Vault, or --extra-vars before use.
+- name: Rocky 8 Install clamav and clamd
+  yum:
+    enablerepo: epel
+    disablerepo: scootersoftware
+    state: present
+    update_cache: True
+    name:
+      - clamav
+      - clamd
+      - clamav-data
+      - clamav-update
+  when: ansible_distribution_major_version == '8'
+  tags:
+    - yum
+    - clamav
+
+- name: Rocky 9 Install clamav and clamd
+  yum:
+    enablerepo: epel
+    disablerepo: scootersoftware
+    state: present
+    update_cache: True
+    name:
+      - clamav
+      - clamd
+      - clamav-data
+      - clamav-freshclam
+  when: ansible_distribution_major_version == '9'
+  tags:
+    - yum
+    - clamav
+
+- name: Set selinux booleans for AV to scan system
+  seboolean:
+    name: antivirus_can_scan_system
+    persistent: yes
+    state: yes
+  tags:
+    - clamav
+
+- name: Set selinux boolean for use jit
+  seboolean:
+    name: antivirus_use_jit
+    persistent: yes
+    state: yes
+  tags:
+    - clamav
+
+- name: Setup scan.conf for clamd
+  blockinfile:
+    path: /etc/clamd.d/scan.conf
+    block: |
+      LogFile /var/log/clamd.scan
+      LogFileMaxSize 10M
+      LogTime yes
+      LogRotate yes
+      PidFile /run/clamd.scan/clamd.pid
+      LocalSocket /run/clamd.scan/clamd.sock
+      LocalSocketGroup virusgroup
+      LocalSocketMode 660
+      MaxScanSize 2048M
+      StreamMaxLength 2048
+      FixStaleSocket yes
+      MaxThreads 20
+      MaxDirectoryRecursion 20
+      ScanPE yes
+      ExcludePath ^/proc/
+      ExcludePath ^/sys/
+      ExcludePath ^/dev/
+      ExcludePath ^/run/
+      ExcludePath ^/root/quarantine
+      ExcludePath ^/share
+  tags:
+    - clamav
+
+# need some items updated in the scan.conf not covered in block above
+- name: update clamd log to syslog
+  lineinfile:
+    path: /etc/clamd.d/scan.conf
+    regexp: '\s*LogSyslog\s*'
+    line: "LogSyslog no"
+  tags:
+    - clamav
+
+- name: update clamd user
+  lineinfile:
+    path: /etc/clamd.d/scan.conf
+    regexp: '\s*User\s*'
+    line: "User clamscan"
+  tags:
+    - clamav
+
+- name: Create the clamav directory
+  file:
+    path: /var/log/clamav
+    mode: 0750
+    state: directory
+  tags:
+    - clamav
+
+- name: Update selinux context for clamav
+  sefcontext:
+    target: /var/log/clamav
+    ftype: d
+    setype: antivirus_log_t
+    state: present
+  tags:
+    - clamav
+
+- name: run the restorecon on log directory
+  command: restorecon -v /var/log/clamav
+  tags:
+    - clamav
+
+- name: Create the log for clamdscans
+  file:
+    path: /var/log/clamav/clamdscan.log
+    mode: 640
+    state: touch
+  tags:
+    - clamav
+
+- name: Create a quarantine directory for weekly scans
+  file:
+    dest: /root/quarantine
+    state: directory
+  tags:
+    - clamav
+
+- name: Create symlink
+  file:
+    src: /etc/clamd.d/scan.conf
+    dest: /etc/clamd.d/service.conf
+    state: link
+  tags:
+    - clamav
+
+- name: Setup weekly cron scan of system
+  copy:
+    src: files/clamdscan
+    dest: /etc/cron.d/clamdscan
+    mode: 0644
+  tags:
+    - clamav
+
+- name: Check if main.cvd exists
+  stat:
+    path: /var/lib/clamav/main.cvd
+  register: main_exists
+  tags:
+    - clamav
+
+- name: Move the main.cvd to main.cld in preparations for FIPS
+  command: mv /var/lib/clamav/main.cvd /var/lib/clamav/main.cld
+  when: main_exists.stat.exists
+  tags:
+    - clamav
+
+- name: Enable and start clamd
+  service:
+    name: clamd@service
+    enabled: true
+    state: restarted
+  ignore_errors: true
+  tags:
+    - clamav
+    - clamd
+
+# Actually consuming too much resource so make sure clamonacc off and disabled
+# until such time there is a way to limit its cpu resource and memory
+- name: Disable and stop clamonacc
+  service:
+    name: clamonacc
+    enabled: no
+    state: stopped
+  tags:
+    - clamav
+
+# Set up freshclam to check for updats from mirrors
+- name: Settings for fresclam in /etc/freshclam.conf
+  blockinfile:
+    path: /etc/freshclam.conf
+    block: |
+      UpdateLogFile /var/log/clamav/freshclam.log
+      LogFileMaxSize 4M
+      LogTime yes
+      LogRotate yes
+      DatabaseOwner clamupdate
+      PrivateMirror {{ internal_mirror_http_base_url }}/other/clamav_defs/
+      Checks 1
+      NotifyClamd /etc/clamd.d/service.conf
+  tags:
+    - freshclam
+
+- name: Comment out the standard mirror
+  lineinfile:
+    path: /etc/freshclam.conf
+    regexp: '^DatabaseMirror  database.clamav.net'
+    line: "#DatabaseMirror database.clamav.net"
+  tags:
+    - freshclam
+
+- name: create freshclam log
+  file:
+    path: /var/log/clamav/freshclam.log
+    mode: 600
+    owner: clamupdate
+    group: clamupdate
+    state: touch
+  tags:
+    - freshclam
+
+- name: set context on freshclam.log
+  sefcontext:
+    target: /var/log/clamav/freshclam.log
+    ftype: a
+    setype: antivirus_log_t
+    state: present
+  tags:
+    - freshclam
+
+- name: run the restorecon on log file
+  command: restorecon -v /var/log/clamav/freshclam.log
+  tags:
+    - freshclam
+
+- name: Enable freshclam service
+  service:
+    name: clamav-freshclam
+    enabled: true
+    state: restarted
+  tags:
+    - freshclam
