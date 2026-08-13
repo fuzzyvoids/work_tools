@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Genericization variables:
+  ORG_PASSWORD_CHANGE_URL: Password change URL for Jamf Connect.
+  ORG_HELP_URL: Help or service portal URL.
+  ORG_SELF_SERVICE_URL: Self-service or intranet URL, when present.
+  ORG_IDP_HOST: Identity provider host name.
+  ORG_ADMIN_GROUP: Local or IdP group used for admin elevation.
+Replace placeholders before deploying this profile.
+-->
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>AllowNetworkSelection</key>
+	<true/>
+	<key>ChangePasswordURL</key>
+	<string>${ORG_PASSWORD_CHANGE_URL}</string>
+	<key>CreateJamfConnectPassword</key>
+	<true/>
+	<key>CreateNewUserHide</key>
+	<true/>
+	<key>DemobilizeUsers</key>
+	<true/>
+	<key>DenyLocal</key>
+	<true/>
+	<key>DenyLocalExcluded</key>
+	<array>
+		<string>administrator</string>
+		<string>Administrator</string>
+		<string>User Administrator</string>
+		<string>Local Administrator</string>
+		<string>Network Administrator</string>
+		<string>gdadmin</string>
+		<string>${ORG_ADMIN_GROUP}</string>
+		<string>Tempaccount</string>
+		<string>nessusadmin</string>
+		<string>Nessus Admin</string>
+	</array>
+	<key>HelpURL</key>
+	<string>${ORG_HELP_URL}</string>
+	<key>LocalFallback</key>
+	<true/>
+	<key>LoginWindowSize</key>
+	<string>Compact</string>
+	<key>Migrate</key>
+	<true/>
+	<key>MigrateUsersHide</key>
+	<array>
+		<string>administrator</string>
+		<string>Administrator</string>
+		<string>User Administrator</string>
+		<string>Local Administrator</string>
+		<string>Network Administrator</string>
+		<string>gdadmin</string>
+		<string>${ORG_ADMIN_GROUP}</string>
+		<string>Tempaccount</string>
+		<string>nessusadmin</string>
+		<string>Nessus Admin</string>
+	</array>
+	<key>OIDCAdmin</key>
+	<array>
+		<string>Elevated_ServiceDeskAgents</string>
+		<string>Elevated_WorkspaceServices</string>
+	</array>
+	<key>OIDCAdminAttribute</key>
+	<string>groups</string>
+	<key>OIDCClientID</key>
+	<string>0oa2pjtmxjahu7NTU0h8</string>
+	<key>OIDCIgnoreAdmin</key>
+	<false/>
+	<key>OIDCNewPassword</key>
+	<false/>
+	<key>OIDCProvider</key>
+	<string>Okta OIDC</string>
+	<key>OIDCROPGID</key>
+	<string>0oa2pju9s27gfQdkg0h8</string>
+	<key>OIDCRedirectURI</key>
+	<string>https://127.0.0.1/jamfconnect</string>
+	<key>OIDCScopes</key>
+	<string>openid email profile groups</string>
+	<key>OIDCTenant</key>
+	<string>${ORG_IDP_HOST}</string>
+	<key>OIDCUsePassthroughAuth</key>
+	<true/>
+	<key>ROPGTenant</key>
+	<string>${ORG_IDP_HOST}</string>
+</dict>
+</plist>

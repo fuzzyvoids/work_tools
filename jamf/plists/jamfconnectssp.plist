@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Genericization variables:
+  ORG_PASSWORD_CHANGE_URL: Password change URL for Jamf Connect.
+  ORG_HELP_URL: Help or service portal URL.
+  ORG_SELF_SERVICE_URL: Self-service or intranet URL, when present.
+  ORG_IDP_HOST: Identity provider host name.
+  ORG_ADMIN_GROUP: Local or IdP group used for admin elevation.
+Replace placeholders before deploying this profile.
+-->
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Appearance</key>
+	<dict>
+		<key>ShowWelcomeWindow</key>
+		<false/>
+	</dict>
+	<key>CustomMenuItems</key>
+	<dict>
+		<key>getsoftware</key>
+		<string>Launch SelfService+</string>
+	</dict>
+	<key>HiddenMenuItems</key>
+	<array>
+		<string>actions</string>
+		<string>home</string>
+		<string>lastusername</string>
+		<string>preferences</string>
+		<string>resetpassword</string>
+		<string>shares</string>
+		<string>connect</string>
+		<string>quitjamfconnect</string>
+	</array>
+	<key>IdPSettings</key>
+	<dict>
+		<key>ChangePasswordURL</key>
+		<string>${ORG_PASSWORD_CHANGE_URL}</string>
+		<key>OIDCAdminAttribute</key>
+		<string>groups</string>
+		<key>Provider</key>
+		<string>Okta OIDC</string>
+		<key>ROPGID</key>
+		<string>0oa2pju9s27gfQdkg0h8</string>
+		<key>Scopes</key>
+		<string>openid email profile groups</string>
+		<key>TenantID</key>
+		<string>${ORG_IDP_HOST}</string>
+	</dict>
+	<key>Keychain</key>
+	<dict>
+		<key>InternetItems</key>
+		<dict/>
+		<key>PasswordItems</key>
+		<dict/>
+	</dict>
+	<key>PasswordPolicies</key>
+	<dict>
+		<key>CheckOnNetworkChange</key>
+		<true/>
+		<key>PasswordChangeWorkflow</key>
+		<string>Web</string>
+		<key>PasswordSyncBlockList</key>
+		<array>
+			<string>administrator</string>
+			<string>Administrator</string>
+			<string>User Administrator</string>
+			<string>Local Administrator</string>
+			<string>Network Administrator</string>
+			<string>gdadmin</string>
+			<string>${ORG_ADMIN_GROUP}</string>
+			<string>Tempaccount</string>
+			<string>nessusadmin</string>
+			<string>Nessus Admin</string>
+		</array>
+		<key>SyncPasswordsMessage</key>
+		<string>Your computer and network passwords do not match. Please enter your previous network password below so that it may sync with your computer password. Thank you!</string>
+	</dict>
+	<key>SignIn</key>
+	<dict>
+		<key>AutoAuthenticate</key>
+		<true/>
+	</dict>
+	<key>TemporaryUserPermissions</key>
+	<dict>
+		<key>TemporaryUserPromotion</key>
+		<true/>
+		<key>UserPromotionChoices</key>
+		<array>
+			<string>application installation</string>
+			<string>privacy setting change</string>
+			<string>network setting change</string>
+			<string>other setting change</string>
+			<string>terminal</string>
+			<string>sudo</string>
+		</array>
+		<key>UserPromotionDuration</key>
+		<integer>30</integer>
+		<key>UserPromotionReason</key>
+		<true/>
+		<key>UserPromotionTimer</key>
+		<true/>
+		<key>VerifyUserPromotionFIDO2</key>
+		<true/>
+	</dict>
+	<key>UserHelp</key>
+	<dict>
+		<key>HelpOptions</key>
+		<string>${ORG_SELF_SERVICE_URL}</string>
+		<key>HelpType</key>
+		<string>URL</string>
+		<key>SoftwarePath</key>
+		<string>/Applications/Self Service Plus.app</string>
+	</dict>
+	<key>WebBrowser</key>
+	<dict>
+		<key>BrowserSelection</key>
+		<string>Safari</string>
+		<key>LaunchBrowser</key>
+		<true/>
+	</dict>
+</dict>
+</plist>

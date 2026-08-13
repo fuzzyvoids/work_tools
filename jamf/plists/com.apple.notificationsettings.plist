@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>NotificationSettings</key>
+	<array>
+		<dict>
+			<key>AlertType</key>
+			<integer>0</integer>
+			<key>BadgesEnabled</key>
+			<false/>
+			<key>BundleIdentifier</key>
+			<string>com.apple.systempreferences</string>
+			<key>CriticalAlertEnabled</key>
+			<false/>
+			<key>GroupingType</key>
+			<integer>2</integer>
+			<key>NotificationsEnabled</key>
+			<true/>
+			<key>PreviewType</key>
+			<integer>2</integer>
+			<key>ShowInCarPlay</key>
+			<false/>
+			<key>ShowInLockScreen</key>
+			<false/>
+			<key>ShowInNotificationCenter</key>
+			<false/>
+			<key>SoundsEnabled</key>
+			<false/>
+		</dict>
+	</array>
+</dict>
+</plist>

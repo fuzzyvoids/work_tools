@@ -1,0 +1,5 @@
+{
+    "pcoip.enable_audio" = 1;
+    "pcoip.event_filter_mode" = 1;
+    "pcoip.ultra" = 3;
+}

@@ -1,0 +1,1336 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>pfm_app_url</key>
+	<string>https://jamf.com</string>
+	<key>pfm_documentation_url</key>
+	<string>https://jamf.com</string>
+	<key>pfm_targets</key>
+	<array>
+		<string>system</string>
+	</array>
+	<key>pfm_platforms</key>
+	<array>
+		<string>macOS</string>
+	</array>
+	<key>pfm_description</key>
+	<string>Settings for Jamf Migrate for macOS</string>
+	<key>pfm_domain</key>
+	<string>com.jamf.migrateSettings</string>
+	<key>pfm_format_version</key>
+	<integer>1</integer>
+	<key>pfm_last_modified</key>
+	<date>2024-10-25T17:44:00Z</date>
+	<key>pfm_title</key>
+	<string>Jamf Migrate</string>
+	<key>pfm_unique</key>
+	<false/>
+	<key>pfm_version</key>
+	<integer>1</integer>
+	<key>pfm_subkeys</key>
+	<array>
+		<dict>
+			<key>pfm_default</key>
+			<string>Settings for Jamf Migrate</string>
+			<key>pfm_description</key>
+			<string>Description of the payload.</string>
+			<key>pfm_description_reference</key>
+			<string>Optional. A human-readable description of this payload. This description is shown on the Detail screen.</string>
+			<key>pfm_name</key>
+			<string>PayloadDescription</string>
+			<key>pfm_title</key>
+			<string>Payload Description</string>
+			<key>pfm_type</key>
+			<string>string</string>
+		</dict>
+		<dict>
+			<key>pfm_default</key>
+			<string>Jamf Migrate</string>
+			<key>pfm_description</key>
+			<string>Name of the payload.</string>
+			<key>pfm_description_reference</key>
+			<string>A human-readable name for the profile payload. This name is displayed on the Detail screen. It does not have to be unique.</string>
+			<key>pfm_name</key>
+			<string>PayloadDisplayName</string>
+			<key>pfm_require</key>
+			<string>always</string>
+			<key>pfm_title</key>
+			<string>Payload Display Name</string>
+			<key>pfm_type</key>
+			<string>string</string>
+		</dict>
+		<dict>
+			<key>pfm_default</key>
+			<string>com.jamf.migrateSettings</string>
+			<key>pfm_description</key>
+			<string>A unique identifier for the payload, dot-delimited.  Usually root PayloadIdentifier+subidentifier</string>
+			<key>pfm_description_reference</key>
+			<string>A reverse-DNS-style identifier for the specific payload. It is usually the same identifier as the root-level PayloadIdentifier value with an additional component appended.</string>
+			<key>pfm_name</key>
+			<string>PayloadIdentifier</string>
+			<key>pfm_require</key>
+			<string>always</string>
+			<key>pfm_title</key>
+			<string>Payload Identifier</string>
+			<key>pfm_type</key>
+			<string>string</string>
+		</dict>
+		<dict>
+			<key>pfm_default</key>
+			<string>com.jamf.migrateSettings</string>
+			<key>pfm_description</key>
+			<string>The type of the payload, a reverse dns string.</string>
+			<key>pfm_description_reference</key>
+			<string>The payload type.</string>
+			<key>pfm_name</key>
+			<string>PayloadType</string>
+			<key>pfm_require</key>
+			<string>always</string>
+			<key>pfm_title</key>
+			<string>Payload Type</string>
+			<key>pfm_type</key>
+			<string>string</string>
+		</dict>
+		<dict>
+			<key>pfm_description</key>
+			<string>Unique identifier for the payload (format 01234567-89AB-CDEF-0123-456789ABCDEF)</string>
+			<key>pfm_description_reference</key>
+			<string>A globally unique identifier for the payload. The actual content is unimportant, but it must be globally unique. In macOS, you can use uuidgen to generate reasonable UUIDs.</string>
+			<key>pfm_format</key>
+			<string>^[0-9A-Za-z]{8}-[0-9A-Za-z]{4}-[0-9A-Za-z]{4}-[0-9A-Za-z]{4}-[0-9A-Za-z]{12}$</string>
+			<key>pfm_name</key>
+			<string>PayloadUUID</string>
+			<key>pfm_require</key>
+			<string>always</string>
+			<key>pfm_title</key>
+			<string>Payload UUID</string>
+			<key>pfm_type</key>
+			<string>string</string>
+		</dict>
+		<dict>
+			<key>pfm_default</key>
+			<integer>1</integer>
+			<key>pfm_description</key>
+			<string>The version of the whole configuration profile.</string>
+			<key>pfm_description_reference</key>
+			<string>The version number of the individual payload.
+A profile can consist of payloads with different version numbers. For example, changes to the VPN software in iOS might introduce a new payload version to support additional features, but Mail payload versions would not necessarily change in the same release.</string>
+			<key>pfm_name</key>
+			<string>PayloadVersion</string>
+			<key>pfm_require</key>
+			<string>always</string>
+			<key>pfm_title</key>
+			<string>Payload Version</string>
+			<key>pfm_type</key>
+			<string>integer</string>
+		</dict>
+		<dict>
+			<key>pfm_description</key>
+			<string>This value describes the issuing organization of the profile, as displayed to the user</string>
+			<key>pfm_name</key>
+			<string>PayloadOrganization</string>
+			<key>pfm_title</key>
+			<string>Payload Organization</string>
+			<key>pfm_type</key>
+			<string>string</string>
+		</dict>
+
+		<!-- *************************** SEGMENTS *************************** -->
+
+		<dict>
+			<key>pfm_name</key>
+			<string>PFC_SegmentedControl_0</string>
+			<key>pfm_range_list_titles</key>
+			<array>
+				<string>Basic</string>
+				<string>Deferrals</string>
+				<string>Advanced</string>
+				<string>Network</string>
+				<string>Custom text</string>
+			</array>
+			<key>pfm_require</key>
+			<string>always</string>
+			<key>pfm_segments</key>
+			<dict>
+				
+				<key>Basic</key>
+				<array>
+					<string>companyName</string>
+					<string>icon</string>
+					<string>destinationJamfProURL</string>
+					<string>destinationJamfProInvite</string>
+					<string>jamfMigrateAPIKey</string>
+					<string>adminPromotion</string>
+					<string>reissueFVKey</string>
+					<string>blurscreen</string>
+					<string>uninstallMDM</string>
+					<string>prePolicy</string>
+					<string>postPolicy</string>
+				</array>
+				
+				<key>Deferrals</key>
+				<array>
+					<string>deferrals</string>
+					<string>startTimer</string>
+					<string>deadline</string>
+					<string>enrollDeferSkip</string>
+					<string>selectValues</string>
+					<string>selectDefault</string>
+					<string>deferralTime1</string>
+					<string>deferralTime2</string>
+					<string>deferralTime3</string>
+				</array>
+				
+				<key>Advanced</key>
+				<array>
+					<string>finalTimeout</string>
+					<string>binaryTimeout</string>
+					<string>enrollFlagTimeout</string>
+					<string>language</string>
+					<string>fileVaultTimeOut</string>
+					<string>ignoreLocalRemove</string>
+					<string>dialogHeight</string>
+					<string>dialogWidth</string>
+					<string>iconSize</string>
+					<string>titleFontName</string>
+					<string>titleFontSize</string>
+					<string>messageFontSize</string>
+					<string>listDialogPosition</string>
+					<string>instructionsDialogPosition</string>
+					<string>skipADEInstructions</string>
+					<string>adeURLCheckSkip</string>
+					<string>unenrollWait</string>
+					<string>migrateReboot</string>
+					<string>verboseFinalRecon</string>
+					<string>rebootTimer</string>
+					<string>profilesWait</string>
+					<string>profileCheckTimeout</string>
+					<string>profilesWaitlist</string>
+					<string>autoplay</string>
+					<string>assignedUser</string>
+					<string>infoButtonAction</string>
+					<string>prePolicyMultiRun</string>
+					<string>postPolicyWaitSkip</string>
+					<string>stealthMode</string>
+				</array>
+				
+				<key>Network</key>
+				<array>
+					<string>networkTimeout</string>
+					<string>forbiddenSSIDs</string>
+					<string>requiredSSID</string>
+					<string>requiredSSIDpw</string>
+					<string>removeEnrollmentNetwork</string>
+				</array>
+				
+				<key>Custom text</key>
+				<array>
+					<string>title</string>
+					<string>mainText</string>
+					<string>enrollMessage</string>
+					<string>messageTY</string>
+					<string>messageNet</string>
+					<string>messageNet2</string>
+					<string>forbiddenNetworkMessage</string>
+					<string>networkMessageDeferral</string>
+					<string>profileUnremovableMessage</string>
+					<string>deferralMessage</string>
+					<string>maxDeferralMessage</string>
+					<string>deferralTimeMessage</string>
+					<string>deadlineMessage</string>
+					<string>fvMessage</string>
+					<string>doneButton</string>
+					<string>okButton</string>
+					<string>Rebootbutton</string>
+					<string>messageReboot</string>
+					<string>infoButtonText</string>
+					<string>listItem1</string>
+					<string>listItem2</string>
+					<string>listItem3</string>
+					<string>listItem4</string>
+					<string>listItem5</string>
+					<string>UIEinstructionsLine1</string>
+					<string>UIEinstructionsLine2</string>
+					<string>UIEinstructionsLine3</string>
+					<string>ADEinstructionsNewLine1</string>
+					<string>ADEinstructionsNewLine2</string>
+					<string>ADEinstructionsLine1</string>
+					<string>ADEinstructionsLine2</string>
+					<string>ADEinstructionsLine3</string>
+					<string>UIEimage1</string>
+					<string>UIEimage2</string>
+					<string>UIEimage3</string>
+					<string>ADEimage1</string>
+					<string>ADEimage2</string>
+					<string>ADEimage3</string>
+					<string>statusWorking</string>
+					<string>statusPending</string>
+					<string>statusComplete</string>
+					<string>statusError</string>
+				</array>
+				
+			</dict>
+			<key>pfm_type</key>
+			<string>string</string>
+		</dict>
+
+		<!-- *************************** APPLICATION KEYS *************************** -->
+		<!-- Basic -->
+		<dict>
+			<key>pfm_name</key>
+			<string>companyName</string>
+			<key>pfm_title</key>
+			<string>Organization name</string>
+			<key>pfm_value_placeholder</key>
+			<string>The ACME Corporation</string>
+			<key>pfm_type</key>
+			<string>string</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>icon</string>
+			<key>pfm_title</key>
+			<string>Organization logo</string>
+			<key>pfm_type</key>
+			<string>string</string>
+			<key>pfm_description</key>
+			<string>A local path or URL link to your organization's logo (512x512 png recommended)</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>destinationJamfProURL</string>
+			<key>pfm_title</key>
+			<string>Destination Jamf Pro URL</string>
+			<key>pfm_type</key>
+			<string>string</string>
+			<key>pfm_description</key>
+			<string>The URL of the destination Jamf Pro Server</string>
+			<key>pfm_value_placeholder</key>
+			<string>https://example.jamfcloud.com</string>
+			<key>pfm_format</key>
+			<string>^https:\/\/.+</string>
+			<key>pfm_require</key>
+			<string>always</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>destinationJamfProInvite</string>
+			<key>pfm_title</key>
+			<string>Destination Jamf Pro enrollment invitation</string>
+			<key>pfm_type</key>
+			<string>string</string>
+			<key>pfm_description</key>
+			<string>Enrollment invitation generated by the destination Jamf Pro server</string>
+			<key>pfm_value_placeholder</key>
+			<string>100543926759304734529456831648485247195</string>
+			<key>pfm_require</key>
+			<string>always</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>jamfMigrateAPIKey</string>
+			<key>pfm_title</key>
+			<string>Jamf Migrate API Key</string>
+			<key>pfm_type</key>
+			<string>string</string>
+			<key>pfm_description</key>
+			<string>This value will be provided by your Jamf Professional Services engineer</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>adminPromotion</string>
+			<key>pfm_title</key>
+			<string>Promote standard users to admin temporarily</string>
+			<key>pfm_type</key>
+			<string>boolean</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>reissueFVKey</string>
+			<key>pfm_title</key>
+			<string>Reissue FileVault key</string>
+			<key>pfm_type</key>
+			<string>boolean</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>blurscreen</string>
+			<key>pfm_title</key>
+			<string>Blur macOS screen behind Jamf Migrate</string>
+			<key>pfm_type</key>
+			<string>boolean</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>uninstallMDM</string>
+			<key>pfm_title</key>
+			<string>MDM framework removal</string>
+			<key>pfm_type</key>
+			<string>string</string>
+			<key>pfm_description</key>
+			<string>MDM framework to remove</string>
+			<key>pfm_range_list</key>
+			<array>
+				<string>addigy</string>
+				<string>meraki</string>
+				<string>filewave</string>
+				<string>fleetsmith</string>
+				<string>jamfschool</string>
+				<string>kandji</string>
+				<string>maas360</string>
+				<string>intune</string>
+				<string>mobileironcloud</string>
+				<string>munki</string>
+				<string>workspaceone</string>
+			</array>
+			<key>pfm_range_list_titles</key>
+			<array>
+				<string>Addigy</string>
+				<string>Cisco Meraki</string>
+				<string>FileWave</string>
+				<string>Fleetsmith</string>
+				<string>Jamf School</string>
+				<string>Kandji</string>
+				<string>Maas360</string>
+				<string>Microsoft Intune</string>
+				<string>MobileIron Cloud</string>
+				<string>Munki</string>
+				<string>Workspace ONE</string>
+			</array>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>prePolicy</string>
+			<key>pfm_title</key>
+			<string>Custom trigger (pre migration)</string>
+			<key>pfm_type</key>
+			<string>string</string>
+			<key>pfm_description</key>
+			<string>The value of a custom trigger to run before prompting for removal of the MDM profile (runs from destination MDM server)</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>postPolicy</string>
+			<key>pfm_title</key>
+			<string>Custom trigger (post migration)</string>
+			<key>pfm_type</key>
+			<string>string</string>
+			<key>pfm_description</key>
+			<string>The value of a custom trigger to run after Migrate is complete (runs from destination MDM server)</string>
+		</dict>
+		
+		
+		<!-- Deferrals -->
+			<dict>
+			<key>pfm_name</key>
+			<string>enrollDeferSkip</string>
+			<key>pfm_title</key>
+			<string>Bypass the option to defer starting the migration</string>
+			<key>pfm_type</key>
+			<string>boolean</string>
+		</dict>
+			<dict>
+			<key>pfm_name</key>
+			<string>startTimer</string>
+			<key>pfm_title</key>
+			<string>Relaunch frequency</string>
+			<key>pfm_type</key>
+			<string>integer</string>
+			<key>pfm_description</key>
+			<string>Rate at which Jamf Migrate relaunches if not quit or closed by deferral (default: 15 minutes)</string>
+			<key>pfm_range_list</key>
+			<array>
+				<integer>300</integer>
+				<integer>600</integer>
+				<integer>900</integer>
+				<integer>1800</integer>
+				<integer>3600</integer>
+				<integer>7200</integer>
+			</array>
+			<key>pfm_range_list_titles</key>
+			<array>
+				<string>5 minutes</string>
+				<string>10 minutes</string>
+				<string>15 minutes (default)</string>
+				<string>30 minutes</string>
+				<string>1 hour</string>
+				<string>2 hours</string>
+			</array>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>deferrals</string>
+			<key>pfm_title</key>
+			<string>Deferrals</string>
+			<key>pfm_type</key>
+			<string>integer</string>
+			<key>pfm_value_placeholder</key>
+			<string>3</string>
+			<key>pfm_description</key>
+			<string>The number of times a user may defer starting the migration (default: 3)</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>deadline</string>
+			<key>pfm_title</key>
+			<string>Deadline</string>
+			<key>pfm_type</key>
+			<string>string</string>
+			<key>pfm_description</key>
+			<string>Date and time after which Jamf Migrate will no longer offer deferral(s) (YYYY-MM-DDTHH:MM:SS)</string>
+			<key>pfm_value_placeholder</key>
+			<string>1970-01-31T23:59:59</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>selectValues</string>
+			<key>pfm_title</key>
+			<string>Custom deferral dropdown text options</string>
+			<key>pfm_value_placeholder</key>
+			<string>Start now,Ask again in 1 hour,Ask again in 4 hours,Ask again tomorrow</string>
+			<key>pfm_type</key>
+			<string>string</string>
+			<key>pfm_description</key>
+			<string>A comma separated list of selectable deferral options. The first item must always correspond to "Start now". You can set custom deferral intervals by also adjusting the deferralTime1/2/3 values below</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>selectDefault</string>
+			<key>pfm_title</key>
+			<string>Default value if using custom deferral options</string>
+				<key>pfm_value_placeholder</key>
+			<string>Start now</string>
+			<key>pfm_type</key>
+			<string>string</string>
+			<key>pfm_description</key>
+			<string>The default selected value for the deferral options. If using custom text, this value must match the first value in the comma separated list</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>deferralTime1</string>
+			<key>pfm_title</key>
+			<string>Deferral value 1</string>
+			<key>pfm_type</key>
+			<string>integer</string>
+			<key>pfm_value_placeholder</key>
+			<string>3600</string>
+			<key>pfm_description</key>
+			<string>How many seconds to defer when the 2nd item in the deferral list is selected (the item after start now)</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>deferralTime2</string>
+			<key>pfm_title</key>
+			<string>Deferral value 2</string>
+			<key>pfm_type</key>
+			<string>integer</string>
+			<key>pfm_value_placeholder</key>
+			<string>14400</string>
+			<key>pfm_description</key>
+			<string>How many seconds to defer when the 2nd item in the deferral list is selected</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>deferralTime3</string>
+			<key>pfm_title</key>
+			<string>Deferral value 3</string>
+			<key>pfm_type</key>
+			<string>integer</string>
+			<key>pfm_value_placeholder</key>
+			<string>86400</string>
+			<key>pfm_description</key>
+			<string>How many seconds to defer when the 3rd item in the deferral list is selected</string>
+		</dict>
+		
+		<!-- Advanced -->
+		<dict>
+			<key>pfm_name</key>
+			<string>language</string>
+			<key>pfm_title</key>
+			<string>Language</string>
+			<key>pfm_type</key>
+			<string>string</string>
+			<key>pfm_description</key>
+			<string>Language for Jamf Migrate text (default English)</string>
+			<key>pfm_range_list</key>
+			<array>
+				<string>en</string>
+				<string>fr</string>
+				<string>de</string>
+				<string>es</string>
+				<string>it</string>
+			</array>
+			<key>pfm_range_list_titles</key>
+			<array>
+				<string>English (default)</string>
+				<string>French</string>
+				<string>German</string>
+				<string>Spanish</string>
+				<string>Italian</string>
+			</array>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>listDialogPosition</string>
+			<key>pfm_title</key>
+			<string>List window position</string>
+			<key>pfm_type</key>
+			<string>string</string>
+			<key>pfm_description</key>
+			<string>The position of the List window (default centre)</string>
+			<key>pfm_range_list</key>
+			<array>
+				<string>centre</string>
+				<string>topleft</string>
+				<string>left</string>
+				<string>bottomleft</string>
+				<string>top</string>
+				<string>bottom</string>
+				<string>topright</string>
+				<string>right</string>
+				<string>bottomright</string>
+			</array>
+			<key>pfm_range_list_titles</key>
+			<array>
+				<string>Centre (default)</string>
+				<string>Top left</string>
+				<string>Left</string>
+				<string>Bottom left</string>
+				<string>Top</string>
+				<string>Bottom</string>
+				<string>Top right</string>
+				<string>Right</string>
+				<string>Bottom right</string>
+			</array>
+		</dict>
+			<dict>
+			<key>pfm_name</key>
+			<string>stealthMode</string>
+			<key>pfm_title</key>
+			<string>Skip displaying the "Preparing migration" step in the List window</string>
+			<key>pfm_description</key>
+			<string>The position of the main window (default centre)</string>
+			<key>pfm_type</key>
+			<string>boolean</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>dialogHeight</string>
+			<key>pfm_title</key>
+			<string>Window heights</string>
+			<key>pfm_type</key>
+			<string>integer</string>
+			<key>pfm_value_placeholder</key>
+			<string>450</string>
+			<key>pfm_description</key>
+			<string>Value for the height of all windows</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>dialogWidth</string>
+			<key>pfm_title</key>
+			<string>Window width</string>
+			<key>pfm_type</key>
+			<string>integer</string>
+			<key>pfm_value_placeholder</key>
+			<string>900</string>
+			<key>pfm_description</key>
+			<string>Value for the width of all windows</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>iconSize</string>
+			<key>pfm_title</key>
+			<string>Icon size</string>
+			<key>pfm_type</key>
+			<string>integer</string>
+			<key>pfm_value_placeholder</key>
+			<string>200</string>
+			<key>pfm_description</key>
+			<string>Value for the size of the icon</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>titleFontName</string>
+			<key>pfm_title</key>
+			<string>Title font</string>
+			<key>pfm_type</key>
+			<string>string</string>
+			<key>pfm_description</key>
+			<string>Title Font must be installed (Default:HelveticaNeue-Bold)</string>
+		</dict>
+			<dict>
+			<key>pfm_name</key>
+			<string>titleFontSize</string>
+			<key>pfm_title</key>
+			<string>Title font size</string>
+			<key>pfm_type</key>
+			<string>integer</string>
+			<key>pfm_value_placeholder</key>
+			<string>40</string>
+			<key>pfm_description</key>
+			<string>Size of the window title text</string>
+		</dict>
+			<dict>
+			<key>pfm_name</key>
+			<string>messageFontSize</string>
+			<key>pfm_title</key>
+			<string>Message font size</string>
+			<key>pfm_type</key>
+			<string>integer</string>
+			<key>pfm_value_placeholder</key>
+			<string>20</string>
+			<key>pfm_description</key>
+			<string>Size of the font text in window body</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>infoButtonAction</string>
+			<key>pfm_title</key>
+			<string>Info button action</string>
+			<key>pfm_type</key>
+			<string>string</string>
+			<key>pfm_description</key>
+			<string>A URL which will be opened when the info/help button is clicked</string>
+			<key>pfm_value_placeholder</key>
+			<string>https://jamf.com</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>instructionsDialogPosition</string>
+			<key>pfm_title</key>
+			<string>Instructions window position</string>
+			<key>pfm_type</key>
+			<string>string</string>
+			<key>pfm_description</key>
+			<string>The position of the Instructions window (default left)</string>
+			<key>pfm_range_list</key>
+			<array>
+				<string>left</string>
+				<string>centre</string>
+				<string>topleft</string>
+				<string>bottomleft</string>
+				<string>top</string>
+				<string>bottom</string>
+				<string>topright</string>
+				<string>right</string>
+				<string>bottomright</string>
+			</array>
+			<key>pfm_range_list_titles</key>
+			<array>
+				<string>Left (default)</string>
+				<string>Centre</string>
+				<string>Top left</string>
+				<string>Bottom left</string>
+				<string>Top</string>
+				<string>Bottom</string>
+				<string>Top right</string>
+				<string>Right</string>
+				<string>Bottom right</string>
+			</array>
+		</dict>
+				<dict>
+			<key>pfm_name</key>
+			<string>autoplay</string>
+			<key>pfm_title</key>
+			<string>Do not automatically scroll instructions image carousel</string>
+			<key>pfm_type</key>
+			<string>boolean</string>
+		</dict>
+			<dict>
+			<key>pfm_name</key>
+			<string>skipADEInstructions</string>
+			<key>pfm_title</key>
+			<string>Skip ADE instructions</string>
+			<key>pfm_type</key>
+			<string>boolean</string>
+		</dict>
+			<dict>
+			<key>pfm_name</key>
+			<string>migrateReboot</string>
+			<key>pfm_title</key>
+			<string>Prompt a reboot at the end of the migration process</string>
+			<key>pfm_type</key>
+			<string>boolean</string>
+		</dict>
+			<dict>
+			<key>pfm_name</key>
+			<string>rebootTimer</string>
+			<key>pfm_title</key>
+			<string>Reboot timer</string>
+			<key>pfm_type</key>
+			<string>integer</string>
+			<key>pfm_value_placeholder</key>
+			<string>300</string>
+			<key>pfm_description</key>
+			<string>A value in seconds of how long to wait until the reboot is forced (default 5 mins)</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>finalTimeout</string>
+			<key>pfm_title</key>
+			<string>Thank you timeout</string>
+			<key>pfm_type</key>
+			<string>integer</string>
+			<key>pfm_value_placeholder</key>
+			<string>60</string>
+			<key>pfm_description</key>
+			<string>The time (in seconds) until the "Thank you" times out</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>assignedUser</string>
+			<key>pfm_title</key>
+			<string>User assignment</string>
+			<key>pfm_type</key>
+			<string>string</string>
+			<key>pfm_description</key>
+			<string>A payload variable that will be substituted for an assigned username (e.g. $USERNAME)</string>
+			<key>pfm_value_placeholder</key>
+			<string>$USERNAME</string>
+		</dict>
+			<dict>
+			<key>pfm_name</key>
+			<string>fileVaultTimeOut</string>
+			<key>pfm_title</key>
+			<string>FileVault time out</string>
+			<key>pfm_type</key>
+			<string>integer</string>
+			<key>pfm_description</key>
+			<string>The amount of time Jamf Migrate will attempt to validate a profile that enforces FileVault escrow is present before timing out</string>
+			<key>pfm_range_list</key>
+			<array>
+				<integer>60</integer>
+				<integer>120</integer>
+				<integer>180</integer>
+				<integer>240</integer>
+				<integer>300</integer>
+			</array>
+			<key>pfm_range_list_titles</key>
+			<array>
+				<string>1 minute (default)</string>
+				<string>2 minutes</string>
+				<string>3 minutes</string>
+				<string>4 minutes</string>
+				<string>5 minutes</string>
+			</array>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>binaryTimeout</string>
+			<key>pfm_title</key>
+			<string>Binary download timeout</string>
+			<key>pfm_type</key>
+			<string>integer</string>
+			<key>pfm_value_placeholder</key>
+			<string>180</string>
+			<key>pfm_description</key>
+			<string>The time until the Jamf Pro binary download times out. Useful for slow internet connections</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>unenrollWait</string>
+			<key>pfm_title</key>
+			<string>Unenroll timeout</string>
+			<key>pfm_type</key>
+			<string>integer</string>
+			<key>pfm_value_placeholder</key>
+			<string>60</string>
+			<key>pfm_description</key>
+			<string>How many seconds after the API command has been sent before timing out</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>enrollFlagTimeout</string>
+			<key>pfm_title</key>
+			<string>Jamf Management Framework timeout</string>
+			<key>pfm_type</key>
+			<string>integer</string>
+			<key>pfm_value_placeholder</key>
+			<string>300</string>
+			<key>pfm_description</key>
+			<string>How many seconds after to wait after the MDM profile has been installed to wait for the Jamf Management Framework to complete installation</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>adeURLCheckSkip</string>
+			<key>pfm_title</key>
+			<string>Force UIE workflow</string>
+			<key>pfm_type</key>
+			<string>boolean</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>ignoreLocalRemove</string>
+			<key>pfm_title</key>
+			<string>Skip local profile removal method</string>
+			<key>pfm_type</key>
+			<string>boolean</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>profilesWait</string>
+			<key>pfm_title</key>
+			<string>Enable Profiles Waitlist</string>
+			<key>pfm_type</key>
+			<string>boolean</string>
+		</dict>
+		<dict>
+			<key>pfm_description</key>
+			<string>A list of profiles to wait for installation of before proceeding</string>
+			<key>pfm_name</key>
+			<string>profilesWaitlist</string>
+			<key>pfm_subkeys</key>
+			<array>
+				<dict>
+					<key>pfm_name</key>
+					<string>profilesWaitlist</string>
+					<key>pfm_title</key>
+					<string>Profiles Waitlist</string>
+					<key>pfm_type</key>
+					<string>string</string>
+					<key>pfm_value_placeholder</key>
+					<string>3A42D3BE-984D-43A8-9273-E7B33C1BB5E6</string>
+				</dict>
+			</array>
+			<key>pfm_title</key>
+			<string>Profiles Waitlist</string>
+			<key>pfm_type</key>
+			<string>array</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>profileCheckTimeout</string>
+			<key>pfm_title</key>
+			<string>Profiles Waitlist timeout</string>
+			<key>pfm_type</key>
+			<string>integer</string>
+			<key>pfm_value_placeholder</key>
+			<string>300</string>
+			<key>pfm_description</key>
+			<string>A value in seconds of how long to wait until profiles in waitlist are installed</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>verboseFinalRecon</string>
+			<key>pfm_title</key>
+			<string>Output verbose Recon logs to the Jamf Migrate log</string>
+			<key>pfm_type</key>
+			<string>boolean</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>prePolicyMultiRun</string>
+			<key>pfm_title</key>
+			<string>Allow the prePolicy trigger to run multiple times</string>
+			<key>pfm_type</key>
+			<string>boolean</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>postPolicyWaitSkip</string>
+			<key>pfm_title</key>
+			<string>Execute postPolicy in an asynchronous sub-shell</string>
+			<key>pfm_type</key>
+			<string>boolean</string>
+		</dict>
+		
+			<!-- Network -->
+		<dict>
+			<key>pfm_description</key>
+			<string>A list of networks on which the computer will not proceed with the migration if connected</string>
+			<key>pfm_name</key>
+			<string>forbiddenSSIDs</string>
+			<key>pfm_subkeys</key>
+			<array>
+				<dict>
+					<key>pfm_name</key>
+					<string>forbiddenSSIDs</string>
+					<key>pfm_title</key>
+					<string>Corporate network list</string>
+					<key>pfm_type</key>
+					<string>string</string>
+					<key>pfm_value_placeholder</key>
+					<string>CorpNetwork</string>
+				</dict>
+			</array>
+			<key>pfm_title</key>
+			<string>Corporate network list</string>
+			<key>pfm_type</key>
+			<string>array</string>
+		</dict>
+			<dict>
+			<key>pfm_name</key>
+			<string>networkTimeout</string>
+			<key>pfm_title</key>
+			<string>Network timeout</string>
+			<key>pfm_type</key>
+			<string>integer</string>
+			<key>pfm_value_placeholder</key>
+			<string>120</string>
+			<key>pfm_description</key>
+			<string>If connected to a Corporate network listed above, a value in seconds for the end-user to select an alternative network before timing out(default 120)</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>requiredSSID</string>
+			<key>pfm_title</key>
+			<string>Enrollment network SSID</string>
+			<key>pfm_type</key>
+			<string>string</string>
+			<key>pfm_description</key>
+			<string>If connected to a Corporate network listed above, a predefined SSID to be automatically selected as the alternative network</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>requiredSSIDpw</string>
+			<key>pfm_title</key>
+			<string>Enrollment network password</string>
+			<key>pfm_type</key>
+			<string>string</string>
+			<key>pfm_description</key>
+			<string>Password for enrollment network</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>removeEnrollmentNetwork</string>
+			<key>pfm_title</key>
+			<string>Remove temporary enrollment network</string>
+			<key>pfm_type</key>
+			<string>boolean</string>
+		</dict>
+			
+		<!-- Custom Text -->
+		<dict>
+			<key>pfm_name</key>
+			<string>title</string>
+			<key>pfm_title</key>
+			<string>Title</string>
+			<key>pfm_type</key>
+			<string>string</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>mainText</string>
+			<key>pfm_title</key>
+			<string>Message text</string>
+			<key>pfm_type</key>
+			<string>string</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>enrollMessage</string>
+			<key>pfm_title</key>
+			<string>Enroll/defer message</string>
+			<key>pfm_type</key>
+			<string>string</string>
+		</dict>
+
+		<dict>
+			<key>pfm_name</key>
+			<string>messageTY</string>
+			<key>pfm_title</key>
+			<string>Thank you message</string>
+			<key>pfm_type</key>
+			<string>string</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>messageNet</string>
+			<key>pfm_title</key>
+			<string>First network message</string>
+			<key>pfm_type</key>
+			<string>string</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>messageNet2</string>
+			<key>pfm_title</key>
+			<string>Second network message</string>
+			<key>pfm_type</key>
+			<string>string</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>forbiddenNetworkMessage</string>
+			<key>pfm_title</key>
+			<string>Corporate Network Message</string>
+			<key>pfm_type</key>
+			<string>string</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>networkMessageDeferral</string>
+			<key>pfm_title</key>
+			<string>Corporate Network Deferral Message</string>
+			<key>pfm_type</key>
+			<string>string</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>profileUnremovableMessage</string>
+			<key>pfm_title</key>
+			<string>Profile unremovable message</string>
+			<key>pfm_type</key>
+			<string>string</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>deferralMessage</string>
+			<key>pfm_title</key>
+			<string>Deferral message line</string>
+			<key>pfm_type</key>
+			<string>string</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>maxDeferralMessage</string>
+			<key>pfm_title</key>
+			<string>Max deferral message line</string>
+			<key>pfm_type</key>
+			<string>string</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>deadlineMessage</string>
+			<key>pfm_title</key>
+			<string>Deadline message</string>
+			<key>pfm_type</key>
+			<string>string</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>fvMessage</string>
+			<key>pfm_title</key>
+			<string>FileVault Key reissue message</string>
+			<key>pfm_type</key>
+			<string>string</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>UIEinstructionsLine1</string>
+			<key>pfm_title</key>
+			<string>UIE instructions step 1</string>
+			<key>pfm_type</key>
+			<string>string</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>UIEinstructionsLine2</string>
+			<key>pfm_title</key>
+			<string>UIE instructions step 2</string>
+			<key>pfm_type</key>
+			<string>string</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>UIEinstructionsLine3</string>
+			<key>pfm_title</key>
+			<string>UIE instructions step 3</string>
+			<key>pfm_type</key>
+			<string>string</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>ADEinstructionsNewLine1</string>
+			<key>pfm_title</key>
+			<string>ADE instructions step 1 (Sonoma)</string>
+			<key>pfm_type</key>
+			<string>string</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>ADEinstructionsNewLine2</string>
+			<key>pfm_title</key>
+			<string>ADE instructions step 2 (Sonoma)</string>
+			<key>pfm_type</key>
+			<string>string</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>ADEinstructionsLine1</string>
+			<key>pfm_title</key>
+			<string>ADE instructions step 1</string>
+			<key>pfm_type</key>
+			<string>string</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>ADEinstructionsLine2</string>
+			<key>pfm_title</key>
+			<string>ADE instructions step 2</string>
+			<key>pfm_type</key>
+			<string>string</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>ADEinstructionsLine3</string>
+			<key>pfm_title</key>
+			<string>ADE instructions step 3</string>
+			<key>pfm_type</key>
+			<string>string</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>doneButton</string>
+			<key>pfm_title</key>
+			<string>Done button</string>
+			<key>pfm_type</key>
+			<string>string</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>okButton</string>
+			<key>pfm_title</key>
+			<string>OK button</string>
+			<key>pfm_type</key>
+			<string>string</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>Rebootbutton</string>
+			<key>pfm_title</key>
+			<string>Reboot button</string>
+			<key>pfm_type</key>
+			<string>string</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>messageReboot</string>
+			<key>pfm_title</key>
+			<string>Reboot message</string>
+			<key>pfm_type</key>
+			<string>string</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>infoButtonText</string>
+			<key>pfm_title</key>
+			<string>Info button</string>
+			<key>pfm_type</key>
+			<string>string</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>listItem1</string>
+			<key>pfm_title</key>
+			<string>List Item 1</string>
+			<key>pfm_type</key>
+			<string>string</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>listItem2</string>
+			<key>pfm_title</key>
+			<string>List Item 2</string>
+			<key>pfm_type</key>
+			<string>string</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>listItem3</string>
+			<key>pfm_title</key>
+			<string>List Item 3</string>
+			<key>pfm_type</key>
+			<string>string</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>listItem4</string>
+			<key>pfm_title</key>
+			<string>List Item 4</string>
+			<key>pfm_type</key>
+			<string>string</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>listItem5</string>
+			<key>pfm_title</key>
+			<string>List Item 5</string>
+			<key>pfm_type</key>
+			<string>string</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>statusWorking</string>
+			<key>pfm_title</key>
+			<string>Status working</string>
+			<key>pfm_type</key>
+			<string>string</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>statusPending</string>
+			<key>pfm_title</key>
+			<string>Status pending</string>
+			<key>pfm_type</key>
+			<string>string</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>statusComplete</string>
+			<key>pfm_title</key>
+			<string>Status complete</string>
+			<key>pfm_type</key>
+			<string>string</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>statusError</string>
+			<key>pfm_title</key>
+			<string>Status error</string>
+			<key>pfm_type</key>
+			<string>string</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>UIEimage1</string>
+			<key>pfm_title</key>
+			<string>UIE image step 1</string>
+			<key>pfm_type</key>
+			<string>string</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>UIEimage2</string>
+			<key>pfm_title</key>
+			<string>UIE image step 2</string>
+			<key>pfm_type</key>
+			<string>string</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>UIEimage3</string>
+			<key>pfm_title</key>
+			<string>UIE image step 3</string>
+			<key>pfm_type</key>
+			<string>string</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>ADEimage1</string>
+			<key>pfm_title</key>
+			<string>ADE image step 1</string>
+			<key>pfm_type</key>
+			<string>string</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>ADEimage2</string>
+			<key>pfm_title</key>
+			<string>ADE image step 2</string>
+			<key>pfm_type</key>
+			<string>string</string>
+		</dict>
+		<dict>
+			<key>pfm_name</key>
+			<string>ADEimage3</string>
+			<key>pfm_title</key>
+			<string>ADE image step 3</string>
+			<key>pfm_type</key>
+			<string>string</string>
+		</dict>
+	</array>
+</dict>
+</plist>
