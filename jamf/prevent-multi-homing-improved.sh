@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# This version of the script makes use of a state file to to avoid the problem with the previous script, namely that the scrip
+# would be invoked by Jamf when Jamf saw the script's change of the network as a network change. By using a state file, we can 
+# instead determine whether the recent network change was user- or script- initiated, and take action accordingly
+
 # Genericization variables:
 #   ORG_NETWORK_LOCK_DIR: Lock directory used to prevent overlapping runs. Defaults to /var/tmp/org-network-single-interface.lock.
 #   ORG_WIFI_STATE_FILE: State file recording Wi-Fi disablement by policy. Defaults to /var/tmp/org-wifi-disabled-by-policy.
