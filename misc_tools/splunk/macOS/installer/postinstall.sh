@@ -4,11 +4,10 @@
 
 # Splunk Universal Forwarder - macOS Silent Installation Script
 # This script is designed to run as a postinstall script in a .pkg installer.
-# Genericization variables:
-#   SPLUNK_HOME: Splunk Universal Forwarder install path. Defaults to /opt/splunkforwarder.
-#   STAGING_DIR: Directory containing the staged Splunk package and configuration files. Defaults to /var/tmp/splunk_install.
 # Specifies the shell setting to ensure the script stops immediately if any step fails:
 # Copied from https://help.splunk.com/en/splunk-cloud-platform/forward-and-process-data/universal-forwarder-manual/10.2/install-the-universal-forwarder/deploying-the-universal-forwarder-to-a-macos-fleet
+# Modified by Rob Fischer with info from John White
+# Last edit 6/26/26
 
 set -euo pipefail
 
@@ -21,8 +20,8 @@ die() {
 }
 
 # Configures the installation paths:
-SPLUNK_HOME="${SPLUNK_HOME:-/opt/splunkforwarder}"
-STAGING_DIR="${STAGING_DIR:-/var/tmp/splunk_install}"
+SPLUNK_HOME="/opt/splunkforwarder"
+STAGING_DIR="/var/tmp/splunk_install"
 CONF_FILES=("deploymentclient.conf" "outputs.conf" "user-seed.conf")
 
 # Validate Prerequisites

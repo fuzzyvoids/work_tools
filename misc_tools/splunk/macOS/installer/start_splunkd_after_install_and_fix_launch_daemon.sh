@@ -1,10 +1,6 @@
 #!/bin/bash
 
 # This Script will correct the error that occurs when splunkd fails to launch
-# Genericization variables:
-#   SPLUNK_LAUNCHD_PLIST: Splunk LaunchDaemon plist path. Defaults to /Library/LaunchDaemons/com.splunk.plist.
-#   SPLUNK_PLISTBUDDY: PlistBuddy path. Defaults to /usr/libexec/PlistBuddy.
-#   DEFAULT_SPLUNK_HOME: Default Splunk Universal Forwarder install path.
 # due to not having its SPLUNK_HOME environment variable set.
 # This occurs because splunk/splunkd are run via launchd/launchctl rather than
 # just as the root (or any other) user.
@@ -17,12 +13,12 @@ set -uo pipefail
 # Paramter 4 = the intended SPLUNK_HOME environment variable
 # (also the directory where splunk is installed)
 
-PLIST="${SPLUNK_LAUNCHD_PLIST:-/Library/LaunchDaemons/com.splunk.plist}"
-PLISTBUDDY="${SPLUNK_PLISTBUDDY:-/usr/libexec/PlistBuddy}"
-DEFAULT_SPLUNK_HOME="${DEFAULT_SPLUNK_HOME:-/opt/splunkforwarder}"
+PLIST="/Library/LaunchDaemons/com.splunk.plist"
+PLISTBUDDY="/usr/libexec/PlistBuddy"
+DEFAULT_SPLUNK_HOME="/opt/splunkforwarder"
 
-# Jamf passes script parameters in $4 and later. Default to DEFAULT_SPLUNK_HOME
-# when parameter 4 is not provided.
+# Jamf passes script parameters in $4 and later. Default to the current GDMS
+# install path when parameter 4 is not provided.
 SPLUNK_HOME="${4:-$DEFAULT_SPLUNK_HOME}"
 # These are the explicit installation directories if you need them:
 # SPLUNK_HOME="/Applications/SplunkForwarder/" #old
