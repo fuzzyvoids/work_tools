@@ -19,7 +19,7 @@ OUTPUT_FORMAT="json"
 OUTPUT_FILE="$(mktemp -t claude_removal_macOS_list.XXXXXX)"
 SEARCH_BASE="/Users"
 SCRIPT_NAME="${0:t}"
-SCRIPT_VERSION="1.1.0"
+SCRIPT_VERSION="1.1.1"
 STARTED_AT="$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
 COMPLETED_AT=""
 RESULT="unknown"
@@ -411,6 +411,27 @@ is_claude_executable() {
     return 0
 }
 
+is_claude_app_bundle() {
+    local app_path="$1"
+    local plist="$app_path/Contents/Info.plist"
+    local bundle_id display_name bundle_name
+
+    # Keep app deletion intentionally narrow: only the standard Claude.app
+    # bundle path is considered, and symlinked bundles are not accepted.
+    [[ "$app_path" == "/Applications/Claude.app" ]] || return 1
+    [[ -d "$app_path" && ! -L "$app_path" ]] || return 1
+    [[ -f "$plist" ]] || return 1
+
+    bundle_id="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$plist" 2>/dev/null || true)"
+    display_name="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleDisplayName' "$plist" 2>/dev/null || true)"
+    bundle_name="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleName' "$plist" 2>/dev/null || true)"
+
+    [[ "$bundle_id" == com.anthropic* ]] || return 1
+    [[ "$display_name" == "Claude" || "$bundle_name" == "Claude" ]] || return 1
+
+    return 0
+}
+
 add_homebrew_targets() {
     local out_file="$1"
     local brew_bin package_name
@@ -455,6 +476,7 @@ add_global_targets() {
     # Homebrew and common global npm install locations. These entries are
     # limited to the Claude executable and the Claude Code package directory.
     local -a global_candidates=(
+        "/Applications/Claude.app"
         "/opt/homebrew/bin/claude"
         "/opt/homebrew/lib/node_modules/@anthropic-ai/claude-code"
         "/usr/local/bin/claude"
@@ -577,6 +599,10 @@ is_allowed_target() {
         */.volta/tools/image/packages/@anthropic-ai/claude-code|\
         */.bun/bin/claude)
             return 0
+            ;;
+        /Applications/Claude.app)
+            is_claude_app_bundle "$item"
+            return $?
             ;;
         *)
             if is_claude_executable "$item"; then
