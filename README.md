@@ -45,6 +45,10 @@ No proprietary company data or sensitive information is included.
 
 - **Zscaler install parameters** (`misc_tools/zscaler/`): XML, plist, and mobileconfig examples for Zscaler client installation parameters. Cloud name, device token, and policy token values are placeholders intended for templating before deployment.
 
+### References
+
+- Various text files (markdown, rich-text, html) that I have found useful to keep handy for quick-and-handy reference
+
 ### Repository Notes
 
 - These files contain many parameters and placeholders, to avoid the inclusion of private or proprietary information.
