@@ -29,6 +29,7 @@ set -euo pipefail
 
 SEARCH_BASE="/home"
 OUTPUT_FILE="/tmp/claude_removal_list_$(date +%Y%m%d_%H%M%S).txt"
+RESULT_FILE="${OUTPUT_FILE%.txt}_results.txt"
 
 add_if_exists() {
     local path="$1" out_file="$2"
@@ -137,9 +138,12 @@ perform_deletion() {
 }
 
 find_targets "$OUTPUT_FILE"
-print_list "$OUTPUT_FILE"
-echo "List saved to: $OUTPUT_FILE"
-perform_deletion "$OUTPUT_FILE"
+{
+    print_list "$OUTPUT_FILE"
+    echo "List saved to: $OUTPUT_FILE"
+    perform_deletion "$OUTPUT_FILE"
+} | tee "$RESULT_FILE"
+echo "Results saved to: $RESULT_FILE"
 '@
 
 function Add-OutputLine {
