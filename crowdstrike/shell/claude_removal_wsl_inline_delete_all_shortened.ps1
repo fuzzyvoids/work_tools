@@ -5,7 +5,7 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 $Script:OutputBuffer = New-Object System.Collections.Generic.List[string]
-$Script:ScriptVersion = '2026-07-21-host-bash-file-bounded-expanded-v3'
+$Script:ScriptVersion = '2026-08-31-host-bash-file-bounded-expanded-v3-wsl-not-installed-noop'
 $Script:ChildTimeoutSeconds = 90
 $Script:CurrentScriptPath = $PSCommandPath
 $Script:CurrentScriptText = $null
@@ -189,6 +189,13 @@ function Read-LogLinesShared {
 function Normalize-WslOutputLine {
     param([string]$Line)
     return (($Line -replace "`0", '') -replace '^\s*\*\s*', '').Trim()
+}
+
+function Test-WslNotInstalledOutput {
+    param([object[]]$RawOutput)
+
+    $cleanOutput = @($RawOutput | ForEach-Object { Normalize-WslOutputLine -Line ([string]$_) }) -join ' '
+    return ($cleanOutput -match 'Windows Subsystem for Linux is not installed')
 }
 
 function Test-RunningAsSystem {
@@ -384,6 +391,11 @@ function Get-RunningWslDistributions {
     Write-Status 'Running command: wsl.exe --list --running --quiet'
     $raw = & wsl.exe --list --running --quiet 2>&1
     if ($LASTEXITCODE -ne 0) {
+        if (Test-WslNotInstalledOutput -RawOutput $raw) {
+            Write-Status 'WSL is not installed or available in this Windows user context. No action taken.'
+            return @()
+        }
+
         throw "Unable to list running WSL distributions. wsl.exe returned exit code $LASTEXITCODE. Output: $($raw -join ' ')"
     }
 
@@ -729,7 +741,10 @@ try {
     }
 
     if (-not (Get-Command -Name wsl.exe -ErrorAction SilentlyContinue)) {
-        throw 'wsl.exe was not found on this host.'
+        Write-Status 'wsl.exe was not found on this host. WSL is not available. No action taken.'
+        Write-Status 'Completed successfully.'
+        Write-ResultJson -Result 'success' -ExitCode 0 -RunningAsSystem $runningAsSystem
+        exit 0
     }
 
     $exitCode = Invoke-InlineRemovalForVisibleWslDistros

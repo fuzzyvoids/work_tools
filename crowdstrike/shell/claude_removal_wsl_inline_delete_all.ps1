@@ -5,7 +5,7 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 $Script:OutputBuffer = New-Object System.Collections.Generic.List[string]
-$Script:ScriptVersion = '2026-07-21-host-bash-file-bounded-expanded-v3'
+$Script:ScriptVersion = '2026-08-31-host-bash-file-bounded-expanded-v3-wsl-not-installed-noop'
 $Script:ChildTimeoutSeconds = 90
 $Script:CurrentScriptPath = $PSCommandPath
 $Script:CurrentScriptText = $null
@@ -256,6 +256,12 @@ function Normalize-WslOutputLine {
     return (($Line -replace "`0", '') -replace '^\s*\*\s*', '').Trim()
 }
 
+function Test-WslNotInstalledOutput {
+    param([object[]]$RawOutput)
+    $cleanOutput = @($RawOutput | ForEach-Object { Normalize-WslOutputLine -Line ([string]$_) }) -join ' '
+    return ($cleanOutput -match 'Windows Subsystem for Linux is not installed')
+}
+
 function Test-RunningAsSystem {
     $identity = [Security.Principal.WindowsIdentity]::GetCurrent()
     return ($identity.User.Value -eq 'S-1-5-18')
@@ -449,6 +455,10 @@ function Get-RunningWslDistributions {
     Write-Status 'Running command: wsl.exe --list --running --quiet'
     $raw = & wsl.exe --list --running --quiet 2>&1
     if ($LASTEXITCODE -ne 0) {
+        if (Test-WslNotInstalledOutput -RawOutput $raw) {
+            Write-Status 'WSL is not installed or available in this Windows user context. No action taken.'
+            return @()
+        }
         throw "Unable to list running WSL distributions. wsl.exe returned exit code $LASTEXITCODE. Output: $($raw -join ' ')"
     }
 
@@ -783,7 +793,24 @@ try {
     }
 
     if (-not (Get-Command -Name wsl.exe -ErrorAction SilentlyContinue)) {
-        throw 'wsl.exe was not found on this host.'
+        Write-Status 'wsl.exe was not found on this host. WSL is not available. No action taken.'
+        $exitCode = 0
+        $result = 'success'
+        [PSCustomObject]@{
+            result          = $result
+            exitCode        = $exitCode
+            hostname        = [System.Net.Dns]::GetHostName()
+            computerName    = $env:COMPUTERNAME
+            user            = [Security.Principal.WindowsIdentity]::GetCurrent().Name
+            runningAsSystem = $runningAsSystem
+            scriptVersion   = $Script:ScriptVersion
+            startedAt       = $startedAt
+            completedAt     = (Get-Date).ToUniversalTime().ToString('o')
+            log             = @($Script:OutputBuffer)
+            error           = $null
+        } | ConvertTo-Json -Depth 8 -Compress
+        $Script:OutputBuffer.Clear()
+        exit 0
     }
 
     $exitCode = Invoke-InlineRemovalForVisibleWslDistros

@@ -272,6 +272,12 @@ function Normalize-WslOutputLine {
     return (($Line -replace "`0", '') -replace '^\s*\*\s*', '').Trim()
 }
 
+function Test-WslNotInstalledOutput {
+    param([object[]]$RawOutput)
+    $cleanOutput = @($RawOutput | ForEach-Object { Normalize-WslOutputLine -Line ([string]$_) }) -join ' '
+    return ($cleanOutput -match 'Windows Subsystem for Linux is not installed')
+}
+
 function Test-RunningAsSystem {
     $identity = [Security.Principal.WindowsIdentity]::GetCurrent()
     return ($identity.User.Value -eq 'S-1-5-18')
@@ -587,6 +593,10 @@ function Invoke-SelfForLoggedOnUsersFromSystem {
 function Get-RunningWslDistributions {
     $raw = & wsl.exe --list --running --quiet 2>&1
     if ($LASTEXITCODE -ne 0) {
+        if (Test-WslNotInstalledOutput -RawOutput $raw) {
+            Write-Status 'WSL is not installed or available in this Windows user context. No action taken.'
+            return @()
+        }
         throw "Unable to list running WSL distributions. wsl.exe returned exit code $LASTEXITCODE. Output: $($raw -join ' ')"
     }
 
@@ -633,7 +643,8 @@ if (Test-RunningAsSystem) {
 }
 
 if (-not (Get-Command -Name wsl.exe -ErrorAction SilentlyContinue)) {
-    throw 'wsl.exe was not found on this host.'
+    Write-Status 'wsl.exe was not found on this host. WSL is not available. No action taken.'
+    exit 0
 }
 
 $runningDistros = @(Get-RunningWslDistributions)
